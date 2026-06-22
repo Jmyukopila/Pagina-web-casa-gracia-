@@ -288,3 +288,60 @@ section{padding:88px 0}
   .footer__grid{grid-template-columns:1fr;gap:24px}
   .rating-big .num{font-size:2.4rem}
 }
+
+/* ============================================================
+   Motion & polish — additive. Final (settled) states match the
+   existing static look, so desktop is unchanged once animated.
+   Every animation is disabled under prefers-reduced-motion.
+   ============================================================ */
+
+/* Scroll-reveal: elements fade + rise as they enter the viewport. */
+.reveal{opacity:0;transform:translateY(16px);
+  transition:opacity .6s ease,transform .6s ease;transition-delay:var(--d,0ms)}
+.reveal.is-in{opacity:1;transform:none}
+
+/* Nav becomes a touch more solid once you scroll past the top. */
+.nav{transition:background .3s ease,box-shadow .3s ease}
+.nav.is-scrolled{background:rgba(251,247,241,.96);box-shadow:0 2px 20px rgba(46,42,38,.07)}
+
+/* Animated underline on the main nav links (excludes the button + lang pill). */
+.nav__links>a:not(.btn)::after{content:"";position:absolute;left:0;bottom:-4px;
+  height:2px;width:100%;background:var(--caramel);border-radius:2px;
+  transform:scaleX(0);transform-origin:left;transition:transform .28s ease}
+.nav__links>a:not(.btn):hover::after{transform:scaleX(1)}
+
+/* Room-card image zoom on hover (card already clips overflow). */
+.room-card__img{transition:transform .5s ease}
+.room-card:hover .room-card__img{transform:scale(1.06)}
+
+/* Subtle hover accent on feature/review cards. */
+.review{transition:box-shadow .2s ease,transform .2s ease,border-color .2s ease}
+.review:hover{box-shadow:var(--shadow);transform:translateY(-3px);border-color:var(--caramel-l)}
+.feature:hover{border-color:var(--caramel-l)}
+
+/* Hero: load fade-in, slide dots, and a scroll-down hint. */
+.hero__content{animation:fadeUp .9s ease both}
+.hero__dots{position:absolute;left:0;right:0;bottom:26px;z-index:3;
+  display:flex;gap:10px;justify-content:center}
+.hero__dot{width:9px;height:9px;border-radius:999px;border:0;cursor:pointer;padding:0;
+  background:rgba(255,255,255,.45);transition:background .25s ease,width .25s ease}
+.hero__dot:hover{background:rgba(255,255,255,.8)}
+.hero__dot.is-active{background:#fff;width:26px}
+.hero__scroll{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:3;
+  color:rgba(255,255,255,.85);display:flex;animation:bob 1.8s ease-in-out infinite}
+.hero__scroll:hover{color:#fff}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+@media(max-width:640px){
+  .hero__dots{bottom:18px}
+  .hero__scroll{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  .hero__content{animation:none}
+  .hero__scroll{animation:none}
+  .room-card:hover .room-card__img{transform:none}
+}

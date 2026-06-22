@@ -34,11 +34,27 @@
   const car = document.getElementById("heroCarousel");
   if (car) {
     const slides = [...car.querySelectorAll(".hero__slide")];
+    const dotsWrap = document.getElementById("heroDots");
     let idx = 0, timer = null;
+
+    // One clickable indicator dot per slide (kept in sync inside go()).
+    const dots = slides.map((_, i) => {
+      if (!dotsWrap) return null;
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "hero__dot" + (i === 0 ? " is-active" : "");
+      b.setAttribute("aria-label", "Foto " + (i + 1));
+      b.addEventListener("click", () => { go(i); restart(); });
+      dotsWrap.appendChild(b);
+      return b;
+    });
+
     function go(n) {
       slides[idx].classList.remove("is-active");
+      dots[idx] && dots[idx].classList.remove("is-active");
       idx = (n + slides.length) % slides.length;
       slides[idx].classList.add("is-active");
+      dots[idx] && dots[idx].classList.add("is-active");
     }
     function restart() {
       clearInterval(timer);
@@ -54,5 +70,73 @@
     const hero = car.closest(".hero");
     hero && hero.addEventListener("mouseenter", () => clearInterval(timer));
     hero && hero.addEventListener("mouseleave", restart);
+  }
+
+  // ---- Motion & polish ----------------------------------------------------
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasIO = "IntersectionObserver" in window;
+
+  // Nav: solidify after scrolling past the top.
+  const nav = document.getElementById("nav");
+  if (nav) {
+    const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  // Scroll-reveal: fade/rise elements as they enter the viewport, staggered
+  // within each grid/row. Final state matches the static layout exactly.
+  const revealEls = document.querySelectorAll(
+    ".feature, .room-card, .review, .split > div, " +
+    "section > .container > .center, .gallery, .bookbar, .detail-grid > div");
+  if (revealEls.length) {
+    if (reduceMotion || !hasIO) {
+      revealEls.forEach((el) => el.classList.add("reveal", "is-in"));
+    } else {
+      const seen = new Map();
+      revealEls.forEach((el) => {
+        el.classList.add("reveal");
+        const n = seen.get(el.parentElement) || 0;
+        el.style.setProperty("--d", (n % 6) * 70 + "ms");
+        seen.set(el.parentElement, n + 1);
+      });
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add("is-in"); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      revealEls.forEach((el) => io.observe(el));
+    }
+  }
+
+  // Count-up: animate a numeric element from 0 to its current value, once,
+  // when it scrolls into view (e.g. the average rating).
+  function countUp(el) {
+    const raw = (el.textContent || "").trim();
+    const m = raw.match(/([\d.,]+)/);
+    if (!m) return;
+    const numStr = m[1];
+    const target = parseFloat(numStr.replace(",", "."));
+    if (!isFinite(target)) return;
+    const decimals = (numStr.split(/[.,]/)[1] || "").length;
+    const prefix = raw.slice(0, m.index);
+    const suffix = raw.slice(m.index + numStr.length);
+    const t0 = performance.now(), dur = 1100;
+    (function frame(t) {
+      const p = Math.min(1, (t - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + (target * eased).toFixed(decimals) + suffix;
+      if (p < 1) requestAnimationFrame(frame); else el.textContent = raw;
+    })(t0);
+  }
+
+  const nums = document.querySelectorAll(".rating-big .num");
+  if (nums.length && hasIO && !reduceMotion) {
+    const nio = new IntersectionObserver((entries, obs) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { countUp(e.target); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.6 });
+    nums.forEach((el) => nio.observe(el));
   }
 })();
