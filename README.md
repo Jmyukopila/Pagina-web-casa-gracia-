@@ -4,6 +4,16 @@ Toolkit + dataset to gather Casa Gracia's listing content (info, photos, prices)
 and build a **direct-booking channel** (your own site/booking engine) so you
 keep more revenue instead of paying OTA commissions.
 
+## En producción
+
+| | Enlace |
+|---|---|
+| **Sitio web** | https://casa-gracia.vercel.app |
+| **Panel de administración** | https://casa-gracia.vercel.app/admin |
+
+> El panel pide el `ADMIN_TOKEN` (configurado en Vercel) para entrar. No lo
+> compartas ni lo subas al repositorio.
+
 ```
 Canal directo casa gracia/
 ├── README.md                     <- you are here
