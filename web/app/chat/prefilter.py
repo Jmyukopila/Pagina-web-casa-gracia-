@@ -17,6 +17,11 @@ _NONWORD = re.compile(r"[^a-z0-9 ]")
 RULES_PATH = Path(__file__).resolve().parent / "data" / "quick_replies.json"
 
 # Words that strongly signal each language (lightweight detection, no libraries).
+# Includes the FAQ vocabulary of quick_replies.json so short keyword questions
+# ("laundry", "iron", "safe"...) are detected reliably instead of defaulting to
+# Spanish. Terms that are identical in both languages (wifi, tv, internet) live
+# in BOTH sets so they don't bias detection either way.
+_NEUTRAL = {"wifi", "internet", "tv", "minibar"}
 _EN_WORDS = {
     "the", "you", "your", "do", "does", "did", "have", "has", "is", "are", "was",
     "were", "what", "where", "when", "how", "why", "which", "can", "could",
@@ -24,11 +29,19 @@ _EN_WORDS = {
     "this", "that", "about", "from", "hi", "hello", "hey", "good", "morning",
     "afternoon", "evening", "thanks", "thank", "want", "need", "looking",
     "available", "included", "they", "it",
-    "parking", "pool", "swimming", "breakfast", "airport", "beach", "beaches",
-    "room", "rooms", "price", "prices", "rate", "rates", "booking", "book",
-    "reserve", "reservation", "night", "nights", "availability", "smoking",
-    "smoke", "transfer", "shuttle", "pet", "pets", "currency", "dollars",
-    "dollar", "languages", "language", "english", "location", "address",
+    "parking", "park", "garage", "car", "vehicle", "pool", "swimming", "rooftop",
+    "terrace", "breakfast", "airport", "beach", "beaches", "room", "rooms",
+    "price", "prices", "rate", "rates", "booking", "book", "reserve",
+    "reservation", "night", "nights", "availability", "smoking", "smoke",
+    "transfer", "shuttle", "pickup", "arrival", "departure", "checkin",
+    "checkout", "reception", "late", "early", "pet", "pets", "dog", "dogs",
+    "cat", "cats", "children", "child", "kids", "kid", "baby", "crib", "family",
+    "currency", "dollars", "dollar", "payment", "pay", "card", "cards", "credit",
+    "debit", "cash", "cancel", "cancellation", "refund", "luggage", "bags",
+    "baggage", "store", "safe", "valuables", "lockbox", "laundry", "wash",
+    "washing", "iron", "ironing", "password", "air", "conditioning", "fridge",
+    "visitor", "visitors", "languages", "language", "english", "spanish",
+    "location", "address", "neighborhood", *_NEUTRAL,
 }
 _ES_WORDS = {
     "hola", "buenas", "buenos", "dias", "tardes", "noches", "que", "cual",
@@ -37,12 +50,20 @@ _ES_WORDS = {
     "con", "gracias", "quiero", "quisiera", "necesito", "puedo", "puede",
     "pueden", "esta", "estan", "estoy", "estamos", "son", "soy", "mi", "su",
     "sus", "tus", "busco", "el", "la", "un", "una", "unos", "unas", "de", "en",
-    "y", "si", "muy", "tengo",
+    "y", "si", "muy", "tengo", "se",
     "habitacion", "habitaciones", "precio", "precios", "tarifa", "tarifas",
-    "desayuno", "parqueadero", "estacionamiento", "piscina", "noche",
-    "disponible", "disponibilidad", "reservar", "reserva", "playa", "aeropuerto",
-    "traslado", "ubicacion", "direccion", "moneda", "pesos", "dolares", "fumar",
-    "idioma", "idiomas",
+    "desayuno", "parqueadero", "estacionamiento", "parqueo", "garaje",
+    "vehiculo", "carro", "piscina", "terraza", "noche", "disponible",
+    "disponibilidad", "reservar", "reserva", "playa", "aeropuerto", "traslado",
+    "recogida", "llegada", "salida", "entrada", "recepcion", "ubicacion",
+    "direccion", "barrio", "moneda", "pesos", "dolares", "fumar", "idioma",
+    "idiomas", "mascota", "mascotas", "perro", "perros", "gato", "nino",
+    "ninos", "nina", "ninas", "menores", "bebe", "cuna", "familia", "pago",
+    "pagar", "tarjeta", "credito", "debito", "efectivo", "cancelar",
+    "cancelacion", "reembolso", "equipaje", "maletas", "consigna", "caja",
+    "fuerte", "valores", "lavanderia", "lavar", "lavado", "plancha", "planchar",
+    "clave", "contrasena", "aire", "acondicionado", "ventilador", "nevera",
+    "visita", "visitas", "invitado", "invitados", *_NEUTRAL,
 }
 
 
