@@ -1,8 +1,19 @@
-# Canal Directo — Casa Gracia Hotel Boutique
+<div align="center">
 
-Toolkit + dataset to gather Casa Gracia's listing content (info, photos, prices)
-and build a **direct-booking channel** (your own site/booking engine) so you
-keep more revenue instead of paying OTA commissions.
+# Casa Gracia Hotel Boutique — Canal Directo
+
+**Motor de reserva directa** para Casa Gracia (Manga, Cartagena de Indias).
+Web propia + chatbot embebido para captar reservas sin pagar comisiones de OTAs.
+
+[![Sitio web](https://img.shields.io/badge/Sitio_web-casa--gracia.vercel.app-B88850?style=for-the-badge)](https://casa-gracia.vercel.app)
+
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-CA2C2C)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres-3FCF8E?logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-serverless-000000?logo=vercel&logoColor=white)
+
+</div>
 
 ## En producción
 
@@ -14,82 +25,143 @@ keep more revenue instead of paying OTA commissions.
 > El panel pide el `ADMIN_TOKEN` (configurado en Vercel) para entrar. No lo
 > compartas ni lo subas al repositorio.
 
+## Características
+
+- **Reserva directa** con flujo completo: búsqueda, detalle de habitación,
+  disponibilidad en vivo y confirmación.
+- **Anti doble-reserva** a nivel de base de datos (constraint `EXCLUDE` de
+  Postgres) + **apartados de 20 min** que vencen y liberan la fecha
+  automáticamente (barrido por la app y por `pg_cron`).
+- **Chatbot embebido** bilingüe: pre-filtro de FAQ sin tokens, modelo LLM con
+  *failover* entre proveedores y herramientas que consultan precios y
+  disponibilidad reales; escala a recepción y guarda el caso.
+- **Bilingüe ES/EN** con detección de idioma y cambio por cookie.
+- **Correo de confirmación** de reserva (SMTP opcional; no falla si no está
+  configurado).
+- **SEO**: canonical, OpenGraph/Twitter, JSON-LD `Hotel`, `sitemap.xml` y
+  `robots.txt` dinámicos.
+- **Imágenes optimizadas**: pipeline WebP con variantes móviles del hero.
+- **Pulido visual**: hero con carrusel, scroll-reveal, micro-interacciones
+  (todo respeta `prefers-reduced-motion`).
+- **Panel de administración** protegido por token: reservas, aprobación de
+  opiniones y cola de escalaciones del chatbot.
+- **Rate-limiting distribuido** respaldado en Postgres (funciona entre
+  instancias *serverless*).
+- **Tests** con pytest sobre la lógica de reservas, apartados, escalaciones y
+  rate-limit.
+
+## Tecnología
+
+FastAPI (async) · SQLAlchemy 2.0 (asyncpg) · Supabase Postgres · Jinja2 SSR ·
+JS/CSS sin frameworks · LLMs vía endpoints compatibles con OpenAI · Vercel.
+
+## Estructura
+
 ```
 Canal directo casa gracia/
-├── README.md                     <- you are here
-├── PLAN.md                       <- strategy & roadmap for the direct channel
-├── data/
-│   ├── casa-gracia-profile.json  <- structured master data (public sources)
-│   ├── casa-gracia-profile.md    <- same, human-readable
-│   └── raw/                       <- raw JSON dumps written by the scrapers
-├── assets/                        <- downloaded photos (by source)
-└── scraper/
-    ├── config.py                  <- EDIT: dates, listing URLs, behaviour
-    ├── common.py                  <- shared browser + parsing helpers
-    ├── scrape_booking.py          <- pull your Booking.com page
-    ├── scrape_airbnb.py           <- pull your 4 Airbnb room listings
-    ├── download_images.py         <- download every collected photo into assets/
-    ├── merge_to_profile.py        <- consolidate raw dumps into one clean file
-    └── requirements.txt
+├── web/                         App de reserva directa (lo principal)
+│   ├── app/
+│   │   ├── main.py              Entrypoint FastAPI (middlewares, errores)
+│   │   ├── config.py            Settings desde entorno (.env)
+│   │   ├── models.py · crud.py  ORM + capa de acceso a datos
+│   │   ├── mailer.py            Correo de confirmación (SMTP opcional)
+│   │   ├── routers/             pages · api · chat · admin · seo · payments
+│   │   ├── chat/                Chatbot: engine, tools, prefilter, knowledge
+│   │   ├── templates/           Jinja2 (index, rooms, booking, admin…)
+│   │   └── static/              CSS, JS e imágenes (con WebP)
+│   ├── tools/optimize_images.py Genera WebP + variantes móviles
+│   ├── tests/                   pytest (reservas, holds, rate-limit…)
+│   ├── api/index.py             Adaptador serverless (Vercel)
+│   └── vercel.json
+├── db/                          Migraciones SQL + utilidades (apply.py)
+├── data/ · scraper/ · assets/   Toolkit para recolectar contenido (ver abajo)
+└── PLAN.md                      Estrategia y hoja de ruta del canal directo
 ```
 
-## ⚠️ Read first — the legitimate way to do this
+## Puesta en marcha (local)
 
-Booking.com and Airbnb **block automated scraping** (you'll see `403`/CAPTCHAs)
-and their **Terms of Service prohibit it**. This toolkit is built for the one
-case where gathering this data is clearly legitimate: **you operate Casa Gracia
-and you're collecting your own listing content from your own accounts.**
-
-Two paths, best first:
-
-1. **Official / API (recommended for anything ongoing).**
-   - **Booking.com**: log into the **Extranet → Property → Photos / Description**
-     and export your own content; for live rates/availability use the
-     **Connectivity (Content) API** (via your channel manager / Connectivity partner).
-   - **Airbnb**: professional hosts / channel managers get the **Airbnb API**.
-   - A **Channel Manager** (Cloudbeds, SiteMinder, Little Hotelier, Hostaway,
-     Lobby PMS, Zeevou…) already holds all this data and syncs it for you.
-
-2. **Local browser pull (this toolkit).** Runs a real Chromium **from your own
-   computer and IP**, optionally logged into your own accounts. Polite pacing is
-   built in. Use it for a one-time content/photo grab, not bulk harvesting.
-
-## Setup (Windows / PowerShell)
+Por defecto usa **SQLite** y se autosiembra, así que arranca sin configurar nada.
 
 ```powershell
-cd "C:\Canal directo casa gracia\scraper"
+cd web
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+$env:ENVIRONMENT = "development"     # crea y siembra la BD SQLite local
+uvicorn app.main:app --reload
+```
+
+Abre http://127.0.0.1:8000
+
+Para apuntar a Postgres/Supabase u otras opciones, copia `.env.example` a `.env`
+y rellena los valores (`DATABASE_URL`, claves del chatbot, SMTP, `ADMIN_TOKEN`…).
+
+### Tests
+
+```powershell
+cd web
+pip install -r requirements-dev.txt
+pytest -q
+```
+
+### Optimizar imágenes
+
+Tras añadir o reemplazar fotos en `app/static/img/`:
+
+```powershell
+cd web
+python tools/optimize_images.py     # genera los .webp (idempotente)
+```
+
+## Despliegue (Vercel)
+
+La app vive en `web/` y se despliega desde ahí (el `rootDirectory` del proyecto
+es la raíz del repo):
+
+```powershell
+cd web
+vercel --prod
+```
+
+Las variables de entorno se gestionan en el panel de Vercel (`vercel env ls`).
+Las migraciones de base de datos se aplican con `python db/apply.py <archivo>.sql`.
+
+## Panel de administración
+
+`/admin` — protegido por `ADMIN_TOKEN`. Permite:
+
+- Ver reservas recientes y su estado.
+- Aprobar o rechazar opiniones pendientes.
+- Trabajar la cola de **escalaciones del chatbot** (con el contacto del huésped).
+
+También expone una API JSON de solo lectura en `/api/admin/*`.
+
+---
+
+## Toolkit de recolección de contenido (opcional)
+
+`scraper/` reúne el contenido del hotel (info, fotos, precios) **de tus propias
+cuentas** para alimentar el canal directo.
+
+> **Importante:** Booking.com y Airbnb bloquean el scraping automatizado y sus
+> términos lo prohíben. Úsalo solo como operador del hotel sobre tu propio
+> contenido. Para algo continuo, prefiere las vías oficiales: export del
+> **Extranet** de Booking, **API de Airbnb** para hosts profesionales, o un
+> **Channel Manager** (Cloudbeds, SiteMinder, Hostaway, Lobby PMS…).
+
+```powershell
+cd scraper
 py -m pip install -r requirements.txt
 py -m playwright install chromium
+
+py scrape_booking.py      # abre un Chromium real; resuelve el CAPTCHA una vez
+py scrape_airbnb.py       # las 4 habitaciones de Airbnb
+py download_images.py     # descarga las fotos a ../assets/
+py merge_to_profile.py    # consolida todo en data/casa-gracia-scraped.json
 ```
 
-## Run
+Edita `scraper/config.py` para fechas, moneda o `HEADLESS = True`. La primera
+corrida usa un perfil persistente (`scraper/.pw-profile`): inicia sesión una vez
+en tu Extranet / cuenta de host y queda recordado.
 
-```powershell
-# 1) Pull Booking page (opens a real browser; solve any CAPTCHA once)
-py scrape_booking.py
-
-# 2) Pull the 4 Airbnb room listings
-py scrape_airbnb.py
-
-# 3) Download every photo the scrapers found, into ../assets/
-py download_images.py
-
-# 4) Consolidate everything into data/casa-gracia-scraped.json
-py merge_to_profile.py
-```
-
-Edit **`scraper/config.py`** to change the search dates (Booking needs dates to
-show live prices), currency, or to set `HEADLESS = True` once it's working.
-
-The first run opens a visible Chromium with a **persistent profile**
-(`scraper/.pw-profile`) — log into your Booking Extranet / Airbnb host account
-there once and it's remembered on later runs.
-
-## What you get
-- `data/raw/*.json` — full JSON-LD, room/price tables, embedded state, photo URLs
-- `assets/booking/`, `assets/airbnb/` — downloaded images
-- `data/casa-gracia-scraped.json` — one consolidated, deduped view
-
-If a site blocks the automated browser, fall back to path #1 (Extranet export /
-API / channel manager) — same data, no friction. See **PLAN.md** for the full
-roadmap to a live direct-booking site.
+Ver **PLAN.md** para la hoja de ruta completa del canal directo.
