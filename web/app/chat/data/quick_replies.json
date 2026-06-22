@@ -1,0 +1,180 @@
+{
+  "_comment": "Respuestas SIN IA (0 tokens). Datos oficiales de Casa Gracia Hotel Boutique (Cartagena, Manga). Bilingue: 'answer' tiene 'es' y 'en'; el prefiltro detecta el idioma y elige. 'keywords' mezcla terminos ES+EN. Sin emojis (preferencia del proyecto).",
+  "greetings": {
+    "keywords": ["hola", "buenas", "buenos dias", "buenas tardes", "buenas noches", "que tal", "ola", "hi", "hello", "hey", "good morning", "good afternoon", "good evening", "greetings", "hi there"],
+    "answer": {
+      "es": "Hola, soy el asistente de Casa Gracia Hotel Boutique (Cartagena). Puedo ayudarte con horarios, parqueadero, piscina, traslados, tarifas y reservas. ¿Qué necesitas?",
+      "en": "Hi, I'm the assistant at Casa Gracia Hotel Boutique (Cartagena). I can help you with times, parking, the pool, transfers, rates and bookings. How can I help?"
+    }
+  },
+  "thanks": {
+    "keywords": ["gracias", "muchas gracias", "genial", "perfecto gracias", "ok gracias", "mil gracias", "thanks", "thank you", "thank u", "thx", "appreciate it"],
+    "answer": {
+      "es": "Con gusto. Si necesitas algo más, aquí estoy.",
+      "en": "You're welcome. If you need anything else, I'm here."
+    }
+  },
+  "rules": [
+    {
+      "keywords": ["parqueadero", "parking", "estacionamiento", "donde parqueo", "puedo dejar el carro", "garaje", "garage", "vehiculo", "park the car", "where do i park"],
+      "answer": {
+        "es": "Sí, tenemos parqueadero gratuito descubierto a la entrada, con capacidad para 3 vehículos. Si vienes en carro, avísanos al reservar para asegurarte el cupo.",
+        "en": "Yes, we have free uncovered parking at the entrance, with space for 3 vehicles. If you're coming by car, let us know when booking to secure a spot."
+      }
+    },
+    {
+      "keywords": ["piscina", "plunge", "pool", "swimming", "rooftop", "terraza", "terrace"],
+      "answer": {
+        "es": "Tenemos piscina al aire libre gratis, abierta todo el año, además de terraza y rooftop para relajarte.",
+        "en": "We have a free outdoor pool, open year-round, plus a terrace and rooftop to relax."
+      }
+    },
+    {
+      "keywords": ["wifi", "wi-fi", "internet", "clave wifi", "contrasena wifi", "wifi password", "internet access"],
+      "answer": {
+        "es": "WiFi gratuito en todo el hotel. La clave te la damos en recepción al llegar.",
+        "en": "Free WiFi throughout the hotel. We'll give you the password at reception when you arrive."
+      }
+    },
+    {
+      "keywords": ["traslado", "aeropuerto", "transfer", "recogida", "shuttle", "pickup", "pick up", "como llego del aeropuerto", "airport transfer", "from the airport"],
+      "answer": {
+        "es": "El hotel no presta el traslado directamente, pero tenemos una persona de confianza que ayuda a los huéspedes con el transporte. El aeropuerto Rafael Núñez está a ~5 km. Dime tu vuelo y lo coordinamos.",
+        "en": "The hotel doesn't provide transfers directly, but we have a trusted person who helps guests with transport. Rafael Núñez airport is ~5 km away. Tell me your flight and we'll arrange it."
+      }
+    },
+    {
+      "keywords": ["check-in", "check in", "checkin", "hora de entrada", "a que hora puedo entrar", "llegada", "arrival time", "what time can i check in", "what time is check in"],
+      "answer": {
+        "es": "El check-in es a partir de las 15:00. La recepción está abierta 24 horas.",
+        "en": "Check-in is from 3:00 PM. Reception is open 24 hours."
+      }
+    },
+    {
+      "keywords": ["check-out", "check out", "checkout", "hora de salida", "a que hora salgo", "departure time", "what time is checkout", "what time is check out"],
+      "answer": {
+        "es": "El check-out es hasta las 11:30.",
+        "en": "Check-out is until 11:30 AM."
+      }
+    },
+    {
+      "keywords": ["desayuno", "incluye desayuno", "a que hora el desayuno", "costo desayuno", "precio desayuno", "breakfast", "is breakfast included", "breakfast cost", "breakfast price"],
+      "answer": {
+        "es": "El desayuno NO está incluido en la tarifa. Tiene un costo de $24.000 COP por persona y puedes elegir entre 4 opciones.",
+        "en": "Breakfast is NOT included in the rate. It costs $24,000 COP per person and you can choose from 4 options."
+      }
+    },
+    {
+      "keywords": ["visita", "visitas", "invitado", "invitados", "puede venir alguien", "recibir visitas", "visitors", "visitor", "guests allowed", "can someone visit"],
+      "answer": {
+        "es": "Por política del hotel no se permiten visitas: los visitantes externos no pueden ingresar al alojamiento.",
+        "en": "As a hotel policy, visitors are not allowed: outside guests cannot enter the accommodation."
+      }
+    },
+    {
+      "keywords": ["aire acondicionado", "tiene aire", "clima", "ventilador", "nevera", "minibar", "tv", "air conditioning", "air con", "a/c", "fridge", "room amenities"],
+      "answer": {
+        "es": "Todas las habitaciones tienen aire acondicionado, baño privado con ducha, TV de pantalla plana, nevera y minibar.",
+        "en": "All rooms have air conditioning, a private bathroom with shower, flat-screen TV, fridge and minibar."
+      }
+    },
+    {
+      "keywords": ["fumar", "fumador", "se puede fumar", "smoking", "can i smoke", "smoke"],
+      "answer": {
+        "es": "Todo el alojamiento es libre de humo: no está permitido fumar dentro.",
+        "en": "The entire property is smoke-free: smoking indoors is not allowed."
+      }
+    },
+    {
+      "keywords": ["idioma", "idiomas", "ingles", "english", "hablan ingles", "que idiomas", "languages", "do you speak english", "what languages"],
+      "answer": {
+        "es": "Atendemos en español e inglés.",
+        "en": "We speak Spanish and English."
+      }
+    },
+    {
+      "keywords": ["donde estan", "donde queda", "direccion", "ubicacion", "como llegar", "barrio", "manga", "where are you", "location", "address", "how to get there", "neighborhood"],
+      "answer": {
+        "es": "Estamos en el barrio Manga, Cartagena de Indias, a 900 m del centro y a 600 m del Castillo de San Felipe.",
+        "en": "We're in the Manga neighborhood, Cartagena de Indias, 900 m from downtown and 600 m from the Castillo de San Felipe."
+      }
+    },
+    {
+      "keywords": ["playa", "playas", "que tan lejos la playa", "distancia playa", "beach", "beaches", "how far is the beach"],
+      "answer": {
+        "es": "La playa más cercana está a solo 1,2 km del hotel.",
+        "en": "The nearest beach is just 1.2 km from the hotel."
+      }
+    },
+    {
+      "keywords": ["moneda", "pesos", "dolares", "usd", "cop", "en que moneda", "currency", "dollars", "what currency", "payment currency"],
+      "answer": {
+        "es": "Manejamos tarifas en pesos colombianos (COP) con equivalente aproximado en dólares (USD). Puedes ver precios y disponibilidad reales en la sección Reservar de la web.",
+        "en": "We quote rates in Colombian pesos (COP) with an approximate equivalent in US dollars (USD). You can see real prices and availability in the Book section of the website."
+      }
+    },
+    {
+      "keywords": ["mascota", "mascotas", "perro", "perros", "gato", "gatos", "llevar mi perro", "animal", "pet", "pets", "dog", "dogs", "cat", "pet friendly", "pet-friendly", "bring my dog"],
+      "answer": {
+        "es": "Por política del hotel no se permiten mascotas en el alojamiento.",
+        "en": "As a hotel policy, pets are not allowed at the property."
+      }
+    },
+    {
+      "keywords": ["nino", "ninos", "niño", "niños", "menores", "bebe", "apto para ninos", "para ninos", "children", "child", "kids", "baby", "family friendly", "cuna", "crib", "cama extra", "camas extra", "cama supletoria", "extra bed"],
+      "answer": {
+        "es": "Sí, el hotel es apto para familias y se admiten niños de todas las edades (tenemos habitación cuádruple familiar). Los niños desde 13 años se consideran adultos para la tarifa; las cunas están sujetas a disponibilidad y no hay camas supletorias.",
+        "en": "Yes, the hotel is family-friendly and children of all ages are welcome (we have a family quadruple room). Children aged 13 and over count as adults for the rate; cribs are subject to availability and there are no extra beds."
+      }
+    },
+    {
+      "keywords": ["forma de pago", "formas de pago", "como pago", "puedo pagar", "pagar con tarjeta", "aceptan tarjeta", "aceptan tarjetas", "tarjeta de credito", "tarjeta debito", "efectivo", "payment", "how can i pay", "pay with card", "accept cards", "credit card", "debit card", "cash"],
+      "answer": {
+        "es": "Aceptamos tarjetas de crédito/débito y efectivo en pesos colombianos (COP). El pago en línea está en proceso de habilitación; para otras formas, coordínalo con recepción.",
+        "en": "We accept credit/debit cards and cash in Colombian pesos (COP). Online payment is being enabled; for other methods, please arrange with reception."
+      }
+    },
+    {
+      "keywords": ["cancelar", "cancelacion", "cancelación", "reembolso", "politica de cancelacion", "puedo cancelar", "cancel", "cancellation", "refund", "cancellation policy", "can i cancel"],
+      "answer": {
+        "es": "La política de cancelación depende de la tarifa que elijas; la verás al seleccionar tus fechas en la sección Reservar. Para cambios en una reserva ya hecha, escríbenos a recepción.",
+        "en": "The cancellation policy depends on the rate you choose; you'll see it when selecting your dates in the Book section. For changes to an existing booking, message our reception."
+      }
+    },
+    {
+      "keywords": ["recepcion", "24 horas", "late check-in", "late check in", "llegada tarde", "llego tarde", "llego de madrugada", "reception", "24 hours", "arrive late", "front desk"],
+      "answer": {
+        "es": "La recepción está abierta las 24 horas, así que no hay problema con un check-in tardío o llegadas de madrugada.",
+        "en": "Reception is open 24 hours, so a late check-in or early-morning arrival is no problem."
+      }
+    },
+    {
+      "keywords": ["equipaje", "maletas", "dejar las maletas", "guardaequipaje", "guarda equipaje", "consigna", "luggage", "bags", "store my luggage", "drop my bags", "left luggage", "baggage"],
+      "answer": {
+        "es": "Sí, si llegas antes del check-in puedes dejar tu equipaje en recepción. También contamos con servicio de guardaequipaje.",
+        "en": "Yes, if you arrive before check-in you can leave your luggage at reception. We also offer a luggage storage service."
+      }
+    },
+    {
+      "keywords": ["caja fuerte", "caja de seguridad", "safe", "safety box", "safe box", "lockbox"],
+      "answer": {
+        "es": "Sí, las habitaciones cuentan con caja fuerte para tus objetos de valor.",
+        "en": "Yes, the rooms have a safe for your valuables."
+      }
+    },
+    {
+      "keywords": ["lavanderia", "lavar ropa", "lavado de ropa", "laundry", "wash clothes", "washing"],
+      "answer": {
+        "es": "Sí, ofrecemos servicio de lavandería (tiene un costo adicional).",
+        "en": "Yes, we offer a laundry service (at an additional cost)."
+      }
+    },
+    {
+      "keywords": ["plancha", "planchar", "iron", "ironing"],
+      "answer": {
+        "es": "Sí, disponemos de plancha para ropa.",
+        "en": "Yes, an iron is available."
+      }
+    }
+  ]
+}

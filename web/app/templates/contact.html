@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ t("Contacto") }} · {{ hotel.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div class="container">
+    <div class="eyebrow">{{ t("Estamos para ayudarte") }}</div>
+    <h1 style="color:var(--ink)">{{ t("Contacto y ubicación") }}</h1>
+  </div>
+</div>
+<section style="padding-top:48px">
+  <div class="container split">
+    <div>
+      <h2>{{ hotel.name }}</h2>
+      <p class="muted">{{ hotel.address }}</p>
+      <ul class="amenities" style="grid-template-columns:1fr">
+        <li>{{ t("Teléfono:") }} <a href="tel:{{ hotel.phone }}">{{ hotel.phone }}</a></li>
+        <li>{{ t("Correo:") }} <a href="mailto:{{ hotel.email }}">{{ hotel.email }}</a></li>
+        <li>WhatsApp: <a href="https://wa.me/{{ hotel.whatsapp }}">{{ t("Escríbenos") }}</a></li>
+        <li>Instagram: <a href="{{ hotel.instagram }}" target="_blank" rel="noopener">@casagracia.ctg</a></li>
+      </ul>
+      <h3 style="margin-top:1.6rem">{{ t("Cómo llegar") }}</h3>
+      <p class="muted">{{ t("A 7 min a pie del Castillo de San Felipe de Barajas, 5 min del Portal de San Felipe y a pocos minutos del Centro Histórico amurallado.") }}</p>
+      <a class="btn" href="/reservar" style="margin-top:1rem">{{ t("Reservar ahora") }}</a>
+    </div>
+    <iframe class="map-embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      src="https://maps.google.com/maps?q={{ hotel.lat }},{{ hotel.lng }}&z=15&output=embed"></iframe>
+  </div>
+</section>
+{% endblock %}

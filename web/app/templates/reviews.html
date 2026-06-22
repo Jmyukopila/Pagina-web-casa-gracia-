@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ t("Opiniones") }} · {{ hotel.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div class="container">
+    <div class="eyebrow">{{ t("Experiencias") }}</div>
+    <h1 style="color:var(--ink)">{{ t("Opiniones de huéspedes") }}</h1>
+    {% if rating_count %}
+    <div class="rating-big" style="justify-content:center;margin-top:1rem">
+      <span class="num">{{ rating_avg }}</span>
+      <div style="text-align:left"><div class="stars">★★★★★</div><span class="muted">{{ t("{n} opiniones").format(n=rating_count) }}</span></div>
+    </div>{% endif %}
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    {% if success %}<div class="notice ok">{{ success }}</div>{% endif %}
+    {% if error %}<div class="notice err">{{ error }}</div>{% endif %}
+
+    <div class="reviews-grid" style="margin-top:0">
+      {% for r in reviews %}{% include "_review.html" %}{% endfor %}
+    </div>
+    {% if not reviews %}<p class="muted center">{{ t("Aún no hay opiniones. ¡Sé el primero en compartir tu experiencia!") }}</p>{% endif %}
+
+    <div class="card" style="max-width:680px;margin:56px auto 0">
+      <h3 class="center">{{ t("Comparte tu experiencia") }}</h3>
+      <form method="post" action="/opiniones">
+        <div class="form-grid">
+          <div class="field"><label for="author">{{ t("Nombre") }}</label><input id="author" name="author" required></div>
+          <div class="field"><label for="country">{{ t("País") }}</label><input id="country" name="country" placeholder="Colombia"></div>
+          <div class="field">
+            <label for="rating">{{ t("Calificación") }}</label>
+            <select id="rating" name="rating" required>
+              <option value="5">{{ t("★★★★★ Excelente") }}</option>
+              <option value="4">{{ t("★★★★ Muy bueno") }}</option>
+              <option value="3">{{ t("★★★ Bueno") }}</option>
+              <option value="2">{{ t("★★ Regular") }}</option>
+              <option value="1">{{ t("★ Malo") }}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rid">{{ t("Habitación (opcional)") }}</label>
+            <select id="rid" name="room_id">
+              <option value="">{{ t("General") }}</option>
+              {% for r in rooms %}<option value="{{ r.id }}">{{ room_name(r) }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="field full"><label for="title">{{ t("Título") }}</label><input id="title" name="title" placeholder="{{ t('Una estadía encantadora') }}"></div>
+          <div class="field full"><label for="body">{{ t("Tu opinión") }}</label><textarea id="body" name="body" rows="4" required></textarea></div>
+        </div>
+        <button class="btn btn--block" type="submit" style="margin-top:1rem">{{ t("Publicar opinión") }}</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

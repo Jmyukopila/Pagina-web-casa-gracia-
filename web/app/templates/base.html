@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ hotel.name }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}Casa Gracia Hotel Boutique — un refugio acogedor en Manga, Cartagena de Indias. Piscina, habitaciones renovadas y atención cálida a pasos del Castillo de San Felipe.{% endblock %}">
+  {% block robots %}<meta name="robots" content="index, follow">{% endblock %}
+  <link rel="canonical" href="{{ base_url }}{{ request.url.path }}">
+  <link rel="alternate" hreflang="es" href="{{ base_url }}{{ request.url.path }}?lang=es">
+  <link rel="alternate" hreflang="en" href="{{ base_url }}{{ request.url.path }}?lang=en">
+
+  {# --- OpenGraph (Facebook, WhatsApp, Instagram link previews) --- #}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ hotel.name }}">
+  <meta property="og:title" content="{{ self.title() }}">
+  <meta property="og:description" content="{{ self.description() }}">
+  <meta property="og:url" content="{{ base_url }}{{ request.url.path }}">
+  <meta property="og:image" content="{{ base_url }}/static/img/{% block og_image %}hero/hero-1.jpg{% endblock %}">
+  <meta property="og:locale" content="{{ 'en_US' if lang == 'en' else 'es_CO' }}">
+
+  {# --- Twitter Card --- #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ self.title() }}">
+  <meta name="twitter:description" content="{{ self.description() }}">
+  <meta name="twitter:image" content="{{ base_url }}/static/img/{{ self.og_image() }}">
+
+  <link rel="icon" href="/static/img/brand/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/static/img/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css?v={{ asset_v }}">
+  <link rel="stylesheet" href="/static/css/chat.css?v={{ asset_v }}">
+
+  {# --- Structured data: helps Google show the hotel as a rich result --- #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Hotel",
+    "name": "{{ hotel.name }}",
+    "url": "{{ base_url }}/",
+    "image": "{{ base_url }}/static/img/hero/hero-1.jpg",
+    "priceRange": "$$",
+    "telephone": "{{ hotel.phone }}",
+    "email": "{{ hotel.email }}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "{{ hotel.address }}",
+      "addressLocality": "Cartagena de Indias",
+      "addressRegion": "Bolívar",
+      "addressCountry": "CO"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": {{ hotel.lat }},
+      "longitude": {{ hotel.lng }}
+    },
+    "sameAs": ["{{ hotel.instagram }}", "{{ hotel.facebook }}"],
+    "amenityFeature": [
+      {"@type": "LocationFeatureSpecification", "name": "Piscina al aire libre", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "WiFi gratis", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Parqueadero gratis", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Aire acondicionado", "value": true},
+      {"@type": "LocationFeatureSpecification", "name": "Recepción 24 horas", "value": true}
+    ]
+  }
+  </script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="nav__brand" href="/" aria-label="{{ hotel.name }}">
+      <img src="/static/img/brand/logo-wordmark.svg" alt="{{ hotel.name }}" height="40">
+    </a>
+    <button class="nav__toggle" aria-label="Menú" onclick="document.getElementById('nav').classList.toggle('is-open')">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav__links">
+      <a href="/habitaciones">{{ t("Habitaciones") }}</a>
+      <a href="/opiniones">{{ t("Opiniones") }}</a>
+      <a href="/contacto">{{ t("Contacto") }}</a>
+      <a class="btn btn--sm" href="/reservar">{{ t("Reservar") }}</a>
+      <span class="lang-switch">
+        <a href="?lang=es" class="{{ 'is-active' if lang == 'es' else '' }}">ES</a>
+        <a href="?lang=en" class="{{ 'is-active' if lang == 'en' else '' }}">EN</a>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <img src="/static/img/brand/icon-white.svg" alt="" height="56" class="footer__icon">
+      <p class="footer__name">{{ hotel.name }}</p>
+      <p class="muted">{{ hotel.address }}</p>
+    </div>
+    <div>
+      <h4>{{ t("Navegación") }}</h4>
+      <a href="/habitaciones">{{ t("Habitaciones") }}</a>
+      <a href="/opiniones">{{ t("Opiniones") }}</a>
+      <a href="/reservar">{{ t("Reservar") }}</a>
+      <a href="/contacto">{{ t("Contacto") }}</a>
+    </div>
+    <div>
+      <h4>{{ t("Contacto") }}</h4>
+      <a href="tel:{{ hotel.phone }}">{{ hotel.phone }}</a>
+      <a href="mailto:{{ hotel.email }}">{{ hotel.email }}</a>
+      <a href="https://wa.me/{{ hotel.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+    <div>
+      <h4>{{ t("Síguenos") }}</h4>
+      <a href="{{ hotel.instagram }}" target="_blank" rel="noopener">Instagram</a>
+      <a href="{{ hotel.facebook }}" target="_blank" rel="noopener">Facebook</a>
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <span class="muted">© {{ hotel.name }} · Cartagena de Indias, Colombia</span>
+    <span class="muted">{{ t("Hecho con cariño · Reserva directa") }}</span>
+  </div>
+</footer>
+
+{% include "_chat_widget.html" %}
+
+<script>window.LANG="{{ lang }}";window.I18N={{ js_i18n | tojson }};window.MONEY={{ money_cfg | tojson }};</script>
+<script src="/static/js/main.js?v={{ asset_v }}" defer></script>
+<script src="/static/js/chat.js?v={{ asset_v }}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

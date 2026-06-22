@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ t("Reservar") }} · {{ hotel.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div class="container">
+    <div class="eyebrow">{{ t("Reserva directa · mejor precio") }}</div>
+    <h1 style="color:var(--ink)">{{ t("Completa tu reserva") }}</h1>
+    <div class="breadcrumb"><a href="/">{{ t("Inicio") }}</a> · {{ t("Reservar") }}</div>
+  </div>
+</div>
+
+<section style="padding-top:48px">
+  <div class="container" style="max-width:760px">
+    {% if error %}<div class="notice err">{{ error }}</div>{% endif %}
+
+    <form class="card" method="post" action="/reservar" id="bookingForm">
+      <div class="form-grid">
+        <div class="field full">
+          <label for="room_id">{{ t("Habitación") }}</label>
+          <select id="room_id" name="room_id" required>
+            <option value="">{{ t("Selecciona una habitación…") }}</option>
+            {% for r in rooms %}
+            <option value="{{ r.id }}" data-max="{{ r.max_occupancy }}" data-price="{{ r.price_cop }}"
+              {% if room and room.id == r.id %}selected{% endif %}>
+              {{ room_name(r) }} — {{ money(r.price_cop) }}/{{ t("por noche") }} ({{ t("máx {n}").format(n=r.max_occupancy) }})
+            </option>{% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="checkin">{{ t("Entrada") }}</label>
+          <input id="checkin" type="date" name="checkin" value="{{ checkin }}" required>
+        </div>
+        <div class="field">
+          <label for="checkout">{{ t("Salida") }}</label>
+          <input id="checkout" type="date" name="checkout" value="{{ checkout }}" required>
+        </div>
+        <div class="field">
+          <label for="guests">{{ t("Huéspedes") }}</label>
+          <input id="guests" type="number" name="guests" min="1" max="10" value="2" required>
+        </div>
+        <div class="field">
+          <label for="guest_phone">{{ t("Teléfono / WhatsApp") }}</label>
+          <input id="guest_phone" type="tel" name="guest_phone" placeholder="+57 ...">
+        </div>
+        <div class="field full">
+          <label for="guest_name">{{ t("Nombre completo") }}</label>
+          <input id="guest_name" type="text" name="guest_name" required>
+        </div>
+        <div class="field full">
+          <label for="guest_email">{{ t("Correo electrónico") }}</label>
+          <input id="guest_email" type="email" name="guest_email" required>
+        </div>
+        <div class="field full">
+          <label for="notes">{{ t("Notas (opcional)") }}</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="{{ t('Hora de llegada, peticiones especiales…') }}"></textarea>
+        </div>
+      </div>
+
+      <div id="estimate" class="totals" style="display:none;margin-top:1rem">
+        <span id="estLabel"></span><span id="estTotal" class="price" style="font-size:1.4rem"></span>
+      </div>
+
+      <button class="btn btn--block" type="submit" style="margin-top:1.4rem">{{ t("Continuar al pago") }}</button>
+      <p class="muted center" style="font-size:.8rem;margin-top:.9rem">
+        {{ t("Al continuar apartamos tu habitación por 20 minutos mientras completas el pago seguro con Wompi.") }}
+      </p>
+    </form>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/booking.js?v={{ asset_v }}" defer></script>
+{% endblock %}

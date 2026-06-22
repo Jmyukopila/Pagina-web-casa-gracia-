@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% from "_media.html" import picture %}
+{% block title %}{{ room_name(room) }} · {{ hotel.name }}{% endblock %}
+{% block description %}{{ room_desc(room)[:150] }}{% endblock %}
+{% block og_image %}{{ (room.images[0] if room.images else 'hero/hero-1.jpg') | replace('/static/img/','') }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div class="container">
+    <div class="eyebrow">{{ room.room_type }}</div>
+    <h1 style="color:var(--ink)">{{ room_name(room) }}</h1>
+    <div class="breadcrumb"><a href="/">{{ t("Inicio") }}</a> · <a href="/habitaciones">{{ t("Habitaciones") }}</a> · {{ room_name(room) }}</div>
+  </div>
+</div>
+
+<section style="padding-top:48px">
+  <div class="container">
+    <div class="gallery">
+      {% for img in room.images[:5] %}{{ picture(img, alt=room_name(room)) }}{% endfor %}
+    </div>
+
+    <div class="detail-grid">
+      <div>
+        <h2>{{ t("Sobre esta habitación") }}</h2>
+        <p class="muted">{{ room_desc(room) }}</p>
+        <div class="room-card__meta" style="margin:1rem 0">
+          <span>{{ icon('user', 17) }} {{ t("Hasta {n} huéspedes").format(n=room.max_occupancy) }}</span>
+          <span>{{ icon('bed', 17) }} {{ t(room.bed) }}</span>
+          {% if room.size_m2 %}<span>{{ icon('area', 17) }} {{ room.size_m2 }} m²</span>{% endif %}
+          {% if room.view %}<span>{{ icon('view', 17) }} {{ t(room.view) }}</span>{% endif %}
+        </div>
+        <h3 style="margin-top:1.6rem">{{ t("Comodidades") }}</h3>
+        <ul class="amenities">
+          {% for a in room.amenities %}<li>{{ t(a) }}</li>{% endfor %}
+        </ul>
+      </div>
+
+      <!-- Availability / booking box -->
+      <aside class="booking-box" id="box"
+             data-room-id="{{ room.id }}" data-slug="{{ room.slug }}"
+             data-price="{{ room.price_cop }}" data-max="{{ room.max_occupancy }}">
+        <div class="price">{{ money(room.price_cop) }}<small style="font-family:'Jost';font-size:.72rem;color:var(--muted)">{{ t("por noche") }}</small></div>
+        <div class="field" style="margin-top:1rem">
+          <label for="ci">{{ t("Entrada") }}</label>
+          <input id="ci" type="date" value="{{ default_checkin }}">
+        </div>
+        <div class="field" style="margin-top:.6rem">
+          <label for="co">{{ t("Salida") }}</label>
+          <input id="co" type="date" value="{{ default_checkout }}">
+        </div>
+        <div class="field" style="margin-top:.6rem">
+          <label for="g">{{ t("Huéspedes") }}</label>
+          <select id="g">
+            {% for n in range(1, room.max_occupancy + 1) %}<option>{{ n }}</option>{% endfor %}
+          </select>
+        </div>
+
+        <div id="avail" class="avail-msg" style="display:none"></div>
+        <div id="totals" style="display:none">
+          <div class="totals"><span id="nlabel">{{ t("Noches") }}</span><span id="ntotal"></span></div>
+          <div class="totals" style="font-weight:600;border-top:1px solid var(--line)">
+            <span>{{ t("Total") }}</span><span id="grand" class="price" style="font-size:1.3rem"></span></div>
+        </div>
+
+        <button class="btn btn--block" id="reserve" style="margin-top:1rem" disabled>{{ t("Comprobar disponibilidad") }}</button>
+        <p class="muted" style="font-size:.78rem;margin:.8rem 0 0;text-align:center">{{ t("Apartas tu fecha al confirmar.") }}</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/availability.js?v={{ asset_v }}" defer></script>
+{% endblock %}

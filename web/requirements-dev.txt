@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest>=8.3
+pytest-asyncio>=0.24
+Pillow>=11.0          # only for tools/optimize_images.py (build-time, not runtime)

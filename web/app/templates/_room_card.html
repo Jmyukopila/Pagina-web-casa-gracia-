@@ -1,0 +1,21 @@
+{% from "_icons.html" import icon %}
+{% from "_media.html" import picture %}
+<article class="room-card">
+  <a href="/habitaciones/{{ room.slug }}">
+    {{ picture(room.images[0] if room.images else '/static/img/rooms/613585235_ae5ac2cd.jpg',
+               alt=room_name(room), cls="room-card__img") }}
+  </a>
+  <div class="room-card__body">
+    <span class="tag">{{ room.room_type }}</span>
+    <h3 style="margin:.3rem 0 0"><a href="/habitaciones/{{ room.slug }}">{{ room_name(room) }}</a></h3>
+    <div class="room-card__meta">
+      <span>{{ icon('user', 16) }} {{ room.max_occupancy }} {{ t("huésp.") }}</span>
+      <span>{{ icon('bed', 16) }} {{ t(room.bed) }}</span>
+      {% if room.size_m2 %}<span>{{ icon('area', 16) }} {{ room.size_m2 }} m²</span>{% endif %}
+    </div>
+    <div class="room-card__foot">
+      <div class="price">{{ money(room.price_cop) }}<small>{{ t("por noche") }}</small></div>
+      <a class="btn btn--sm" href="/habitaciones/{{ room.slug }}">{{ t("Ver") }}</a>
+    </div>
+  </div>
+</article>

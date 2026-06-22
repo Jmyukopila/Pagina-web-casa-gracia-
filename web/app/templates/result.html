@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}{{ t("Reserva") }} {{ booking.reference }} · {{ hotel.name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block content %}
+<section style="padding-top:90px">
+  <div class="container" style="max-width:600px">
+    <div class="card center">
+      {% if booking.estado == "confirmada" %}
+        <div class="status-ic ok">{{ icon('check', 52) }}</div>
+        <h2>{{ t("¡Reserva confirmada!") }}</h2>
+        <p class="muted">{{ t("Tu pago fue aprobado. Te enviamos los detalles a {email}.").format(email=booking.guest_email) }}</p>
+      {% elif booking.estado == "pendiente" %}
+        <div class="status-ic wait">{{ icon('clock', 52) }}</div>
+        <h2>{{ t("¡Reserva registrada!") }}</h2>
+        <p class="muted">{{ t("Tu reserva quedó registrada como pendiente. Te contactaremos para coordinar el pago y confirmarla. También puedes escribirnos por WhatsApp con tu referencia.") }}</p>
+      {% else %}
+        <div class="status-ic err">{{ icon('alert', 52) }}</div>
+        <h2>{{ t("No pudimos confirmar el pago") }}</h2>
+        <p class="muted">{{ t("Tu reserva no se completó. Puedes intentar de nuevo o escribirnos por WhatsApp.") }}</p>
+      {% endif %}
+
+      <div style="text-align:left;margin:1.5rem 0;border-top:1px solid var(--line);padding-top:1rem">
+        <div class="totals"><span>{{ t("Referencia") }}</span><span>{{ booking.reference }}</span></div>
+        <div class="totals"><span>{{ t("Habitación") }}</span><span>{{ room_name(room) }}</span></div>
+        <div class="totals"><span>{{ t("Fechas") }}</span><span>{{ booking.checkin }} → {{ booking.checkout }}</span></div>
+        <div class="totals"><span>{{ t("Total") }}</span><span class="price" style="font-size:1.3rem">{{ money(booking.amount_cop) }}</span></div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        {% if booking.estado != "confirmada" %}
+          <a class="btn" href="/reserva/{{ booking.reference }}/pago">{{ t("Continuar / coordinar pago") }}</a>
+        {% endif %}
+        <a class="btn btn--ghost" href="/">{{ t("Volver al inicio") }}</a>
+        <a class="btn btn--ghost" href="https://wa.me/{{ hotel.whatsapp }}">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

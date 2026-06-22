@@ -1,0 +1,44 @@
+# ───────────────── Secrets — NEVER commit ─────────────────
+.env
+.env.*
+!.env.example
+admin_token.txt
+*.pem
+*.key
+
+# Vercel
+.vercel
+
+# ───────────────── Python ─────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local dev database (SQLite) — prod uses Supabase
+*.db
+*.sqlite
+*.sqlite3
+web/casagracia.db
+
+# ───────────────── Node / tooling ─────────────────
+node_modules/
+
+# ───────────────── Scraper / large binary output ─────────────────
+scraper/.pw-profile/
+assets/
+data/raw/
+
+# ───────────────── OS / editor / temp ─────────────────
+.DS_Store
+Thumbs.db
+*.log
+_m_*.png
+_shot.py
+_ashot.py

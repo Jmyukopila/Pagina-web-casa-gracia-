@@ -1,0 +1,123 @@
+{
+  "$comment": "Master data profile for Casa Gracia Hotel Boutique. Fields marked _verify are aggregated from public OTA/aggregator pages and should be confirmed against the hotel's own records. Compiled 2026-06-20.",
+  "property": {
+    "name": "Casa Gracia Hotel Boutique",
+    "category": "Boutique hotel / Bed & Breakfast",
+    "star_rating": 3,
+    "total_rooms": 8,
+    "year_status": "Recently renovated",
+    "description_short": "Recently renovated 8-room boutique B&B in the Manga district of Cartagena de Indias, with a year-round outdoor pool, plunge pool, terrace, free WiFi and free private parking. A short walk from Castillo de San Felipe de Barajas and a short ride from the walled Old Town.",
+    "languages_spoken": ["Spanish", "English (_verify)"]
+  },
+  "location": {
+    "address_line": "Carrera 17 #26-133",
+    "neighborhood": "Manga",
+    "city": "Cartagena de Indias",
+    "department": "Bolivar",
+    "postal_code": "130001",
+    "country": "Colombia",
+    "coordinates_approx": { "lat": 10.4189, "lng": -75.5375, "_verify": "Approximate Manga centroid; confirm exact pin from Google Maps / Booking map" },
+    "distances": {
+      "city_center": "~997 m",
+      "castillo_san_felipe_de_barajas": "7-9 min walk",
+      "old_town_plaza_bolivar": "~1.6 km / 1.2 mi",
+      "portal_de_san_felipe_shopping": "~5 min walk",
+      "rafael_nunez_airport": "~2.9-3.1 mi / ~5-6 km"
+    },
+    "nearby": {
+      "dining": [
+        "Casa Del Tunel (bar, 6 min)",
+        "Reina Arepa (Caribbean, 5 min)",
+        "Titote Local Food (Caribbean, 6 min)",
+        "Henry's Rooftop San Felipe (American, 5 min)"
+      ],
+      "attractions": [
+        "Black Parrot Bar (6 min)",
+        "Plazoleta de Blas de Lezo (4 min)",
+        "Castillo de San Felipe de Barajas"
+      ]
+    }
+  },
+  "ratings": {
+    "_note": "Review counts differ across platforms and dates; verify current numbers in each extranet.",
+    "booking_com": {
+      "rating_value": 9.0, "best_rating": 10, "review_count": 275,
+      "_source": "Booking JSON-LD aggregateRating, scraped 2026-06-20 (CONFIRMED)",
+      "category_scores": { "cleanliness": 9.0, "comfort": 9.2, "location": 9.0, "facilities": 9.3 }
+    },
+    "tripadvisor": { "award": "Travelers' Choice", "location_id": "d33258412" },
+    "planet_of_hotels": { "review_count_seen": 100 }
+  },
+  "pricing": {
+    "currency": "USD",
+    "_note": "OTA-displayed rates vary by date/season; these are observed public figures, not your net rate.",
+    "seasonal_low_from": 47,
+    "typical_range": [61, 75],
+    "example_observed": 66
+  },
+  "amenities": {
+    "property": [
+      "Outdoor swimming pool (year-round)",
+      "Plunge pool",
+      "Terrace",
+      "Outdoor seating area",
+      "Free WiFi",
+      "Free private parking",
+      "Free shuttle service (_verify)",
+      "Tour desk",
+      "Safety deposit box",
+      "Breakfast (B&B)",
+      "24h / front desk (_verify)"
+    ],
+    "room": [
+      "Air conditioning",
+      "Private bathroom (separate toilet and shower)",
+      "Flat-screen TV with satellite channels",
+      "Mini-fridge / minibar",
+      "Dining table",
+      "Work desk",
+      "Hairdryer",
+      "Towels & linens",
+      "Free WiFi"
+    ]
+  },
+  "room_types": [
+    { "name": "Comfort Double Room", "beds": "1 Queen", "size_sqft": 162, "size_m2": 15, "max_occupancy": 2, "view": null },
+    { "name": "Large Double Room", "beds": "1 Double/Queen (_verify)", "size_sqft": null, "size_m2": null, "max_occupancy": 2, "view": null, "_observed_price_usd": 120, "_source": "Booking room table 2026-07-20/22, scraped 2026-06-20" },
+    { "name": "Deluxe Double Room", "beds": "1 King", "size_sqft": null, "size_m2": null, "max_occupancy": 2, "view": "Pool view" },
+    { "name": "Quadruple Room", "beds": "2 Double", "size_sqft": 226, "size_m2": 21, "max_occupancy": 4, "view": null },
+    { "name": "Twin/Double Room", "beds": "1 Double or 2 Single (_verify)", "size_sqft": null, "size_m2": null, "max_occupancy": 2, "view": null }
+  ],
+  "physical_rooms_observed": [
+    { "number": "101", "label": "Queen Room 101" },
+    { "number": "201", "label": "Double Room 201" },
+    { "number": "202", "label": "King Room 202" },
+    { "number": "301", "label": "Queen Room 301" }
+  ],
+  "policies": {
+    "check_in": "_verify (typ. 15:00)",
+    "check_out": "_verify (typ. 12:00)",
+    "children": "_verify",
+    "pets": "_verify",
+    "cancellation": "_verify"
+  },
+  "listings": {
+    "booking_com": "https://www.booking.com/hotel/co/casa-gracia.html",
+    "booking_reviews": "https://www.booking.com/reviews/co/hotel/casa-gracia.html",
+    "hotels_com": "https://ca.hotels.com/ho3737473632/",
+    "tripadvisor": "https://www.tripadvisor.com/Hotel_Review-g297476-d33258412-Reviews-Casa_Gracia_Hotel_Boutique-Cartagena_Cartagena_District_Bolivar_Department.html",
+    "planet_of_hotels": "https://en.planetofhotels.com/colombia/cartagena-de-indias/casa-gracia-hotel-boutique",
+    "skyscanner": "https://www.espanol.skyscanner.com/hoteles/colombia/cartagena-de-indias-hoteles/casa-gracia-hotel-boutique/ht-222325549",
+    "airbnb_rooms": [
+      { "id": "1197228721608888257", "label": "Queen Room 101", "url": "https://www.airbnb.com/rooms/1197228721608888257" },
+      { "id": "1214331311532778558", "label": "Double Room 201", "url": "https://www.airbnb.com/rooms/1214331311532778558" },
+      { "id": "1218986625525817678", "label": "King Room 202", "url": "https://www.airbnb.com/rooms/1218986625525817678" },
+      { "id": "1265108254884566985", "label": "Queen Room 301", "url": "https://www.airbnb.com/rooms/1265108254884566985" }
+    ]
+  },
+  "provenance": {
+    "compiled": "2026-06-20",
+    "sources": ["Booking.com", "Hotels.com", "TripAdvisor", "Planet of Hotels", "Airbnb listing index", "Skyscanner"],
+    "method": "Public search + page summaries; direct page scraping returned 403 (anti-bot). Use the local Playwright toolkit in /scraper to enrich from your own accounts."
+  }
+}

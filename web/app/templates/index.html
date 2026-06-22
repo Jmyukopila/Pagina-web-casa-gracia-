@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% from "_media.html" import picture %}
+{% block head %}
+<link rel="preload" as="image" href="/static/img/hero/hero-1.webp"
+      imagesrcset="/static/img/hero/hero-1-mobile.webp 768w, /static/img/hero/hero-1.webp 1920w"
+      imagesizes="100vw">
+{% endblock %}
+{% block content %}
+
+<section class="hero" style="padding:0">
+  <div class="hero__carousel" id="heroCarousel">
+    <div class="hero__slide hero__slide--1 is-active"></div>
+    <div class="hero__slide hero__slide--2"></div>
+    <div class="hero__slide hero__slide--3"></div>
+    <div class="hero__slide hero__slide--4"></div>
+    <div class="hero__slide hero__slide--5"></div>
+  </div>
+  <button class="hero__nav hero__nav--prev" id="heroPrev" aria-label="Foto anterior">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="hero__nav hero__nav--next" id="heroNext" aria-label="Siguiente foto">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+  <div class="hero__content">
+    <div class="eyebrow">Manga · Cartagena de Indias</div>
+    <h1>{{ t("Un refugio de calma") }}<br>{{ t("en el corazón de Cartagena") }}</h1>
+    <p>{{ t("Casa Gracia es un hotel boutique de 8 habitaciones recién renovadas, con piscina y atención cálida, a pasos del Castillo de San Felipe.") }}</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn" href="/reservar">{{ t("Reservar ahora") }}</a>
+      <a class="btn btn--light" href="/habitaciones">{{ t("Ver habitaciones") }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- Quick availability bar -->
+<div class="container">
+  <form class="bookbar" action="/reservar" method="get">
+    <div class="field">
+      <label for="hb-room">{{ t("Habitación") }}</label>
+      <select id="hb-room" name="room">
+        <option value="">{{ t("Cualquiera") }}</option>
+        {% for r in all_rooms %}<option value="{{ r.slug }}">{{ room_name(r) }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="hb-in">{{ t("Entrada") }}</label>
+      <input id="hb-in" type="date" name="checkin">
+    </div>
+    <div class="field">
+      <label for="hb-out">{{ t("Salida") }}</label>
+      <input id="hb-out" type="date" name="checkout">
+    </div>
+    <div class="field">
+      <label for="hb-g">{{ t("Huéspedes") }}</label>
+      <select id="hb-g" name="guests">
+        <option>1</option><option selected>2</option><option>3</option><option>4</option>
+      </select>
+    </div>
+    <button class="btn" type="submit">{{ t("Buscar") }}</button>
+  </form>
+</div>
+
+<!-- Intro -->
+<section>
+  <div class="container split">
+    <div>
+      <div class="eyebrow">{{ t("Bienvenido a Casa Gracia") }}</div>
+      <h2>{{ t("Hospitalidad cartagenera, comodidad contemporánea") }}</h2>
+      <p class="muted">{{ t("Recién renovado en el tranquilo barrio de Manga, nuestro hotel combina el encanto de una casa cartagenera con el confort de habitaciones modernas. Disfruta de la piscina, la terraza y un servicio personalizado que hará de tu estadía algo memorable.") }}</p>
+      <p class="muted">{{ t("A 7 minutos a pie del Castillo de San Felipe de Barajas y a pocos minutos del Centro Histórico amurallado.") }}</p>
+      <a class="btn btn--ghost" href="/contacto">{{ t("Conoce el hotel") }}</a>
+    </div>
+    <div>
+      {{ picture('/static/img/rooms/613585235_ae5ac2cd.jpg', alt='Casa Gracia',
+                 style='border-radius:var(--radius-lg);box-shadow:var(--shadow-lg)') }}
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section style="background:var(--cream)">
+  <div class="container center">
+    <div class="eyebrow">{{ t("Lo que te espera") }}</div>
+    <h2>{{ t("Pensado para tu descanso") }}</h2>
+    <div class="feature-grid">
+      <div class="feature"><div class="ic">{{ icon('pool', 30) }}</div><h3>{{ t("Piscina") }}</h3><p>{{ t("Piscina al aire libre y plunge pool todo el año.") }}</p></div>
+      <div class="feature"><div class="ic">{{ icon('wifi', 30) }}</div><h3>{{ t("WiFi gratis") }}</h3><p>{{ t("Conexión rápida en todo el hotel.") }}</p></div>
+      <div class="feature"><div class="ic">{{ icon('parking', 30) }}</div><h3>{{ t("Parqueo") }}</h3><p>{{ t("Estacionamiento privado gratuito.") }}</p></div>
+      <div class="feature"><div class="ic">{{ icon('leaf', 30) }}</div><h3>{{ t("Terraza") }}</h3><p>{{ t("Zona de descanso al aire libre y solárium.") }}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured rooms -->
+<section>
+  <div class="container">
+    <div class="center"><div class="eyebrow">{{ t("Alojamiento") }}</div><h2>{{ t("Nuestras habitaciones") }}</h2></div>
+    <div class="rooms-grid">
+      {% for room in rooms %}
+      {% include "_room_card.html" %}
+      {% endfor %}
+    </div>
+    <div class="center" style="margin-top:40px"><a class="btn btn--ghost" href="/habitaciones">{{ t("Ver todas las habitaciones") }}</a></div>
+  </div>
+</section>
+
+<!-- Reviews -->
+<section style="background:var(--cream)">
+  <div class="container center">
+    <div class="eyebrow">{{ t("Opiniones") }}</div>
+    <h2>{{ t("Lo que dicen nuestros huéspedes") }}</h2>
+    {% if rating_count %}
+    <div class="rating-big"><span class="num">{{ rating_avg }}</span>
+      <div style="text-align:left"><div class="stars">★★★★★</div><span class="muted">{{ t("{n} opiniones").format(n=rating_count) }}</span></div></div>
+    {% endif %}
+    <div class="reviews-grid">
+      {% for r in reviews %}{% include "_review.html" %}{% endfor %}
+    </div>
+    <div style="margin-top:36px"><a class="btn btn--ghost" href="/opiniones">{{ t("Ver todas las opiniones") }}</a></div>
+  </div>
+</section>
+
+<!-- Location -->
+<section>
+  <div class="container split">
+    <div>
+      <div class="eyebrow">{{ t("Ubicación") }}</div>
+      <h2>{{ t("En Manga, a pasos de todo") }}</h2>
+      <p class="muted">{{ hotel.address }}</p>
+      <ul class="amenities">
+        <li>{{ t("7 min al Castillo de San Felipe") }}</li>
+        <li>{{ t("5 min a Portal de San Felipe") }}</li>
+        <li>{{ t("~1.6 km al Centro Histórico") }}</li>
+        <li>{{ t("~10 min al aeropuerto") }}</li>
+      </ul>
+      <a class="btn" href="/reservar" style="margin-top:1.4rem">{{ t("Reservar mi estadía") }}</a>
+    </div>
+    <iframe class="map-embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      src="https://maps.google.com/maps?q={{ hotel.lat }},{{ hotel.lng }}&z=15&output=embed"></iframe>
+  </div>
+</section>
+
+{% endblock %}

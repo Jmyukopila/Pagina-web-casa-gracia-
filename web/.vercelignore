@@ -1,0 +1,12 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite3
+.env
+.env.*
+_srv.log
+_*.png
+_*.py
+gunicorn_conf.py

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} · {{ hotel.name }}{% endblock %}
+{% block content %}
+<section style="padding:120px 0;text-align:center">
+  <div class="container" style="max-width:520px">
+    <img src="/static/img/brand/icon-brand.svg" alt="" height="70" style="margin:0 auto 1.5rem">
+    <h1 style="color:var(--caramel-d)">{{ code }}</h1>
+    <p class="muted" style="font-size:1.1rem">{{ t(message) }}</p>
+    <a class="btn" href="/" style="margin-top:1.5rem">{{ t("Volver al inicio") }}</a>
+  </div>
+</section>
+{% endblock %}

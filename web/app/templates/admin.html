@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin · {{ hotel.name }}</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v={{ asset_v }}">
+  <style>
+    .adm-wrap{max-width:1100px;margin:0 auto;padding:28px 20px 64px}
+    .adm-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+    .adm-grid{display:grid;gap:10px}
+    .adm-row{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+    .adm-row--done{opacity:.55}
+    .adm-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--caramel-d);margin-bottom:4px}
+    table.adm{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+    table.adm th,table.adm td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:.9rem}
+    table.adm th{background:var(--cream);font-weight:600}
+    .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:600}
+    .b-pend{background:var(--cream);color:var(--caramel-d)}
+    .b-conf{background:#eaf3ee;color:var(--ok)}
+    .b-exp{background:#f3efe9;color:#8a7d6c}
+    .b-canc{background:#f7e9e7;color:var(--err)}
+    .adm-section{margin-top:36px}
+    .adm-count{background:var(--caramel);color:#fff;border-radius:999px;padding:1px 10px;font-size:.85rem;margin-left:6px}
+    .inline{display:inline}
+  </style>
+</head>
+<body style="background:var(--sand)">
+<div class="adm-wrap">
+  <div class="adm-head">
+    <h1 style="margin:0;font-size:1.6rem">Panel · {{ hotel.name }}</h1>
+    <a class="btn btn--ghost btn--sm" href="/admin/salir">Salir</a>
+  </div>
+
+  {# --- Escalaciones del chatbot --- #}
+  <div class="adm-section">
+    <h2>Escalaciones del chatbot
+      {% if pending_count %}<span class="adm-count">{{ pending_count }} sin atender</span>{% endif %}
+    </h2>
+    {% if not escalations %}
+      <p class="muted">No hay escalaciones registradas.</p>
+    {% else %}
+    <div class="adm-grid">
+      {% for e in escalations %}
+      <div class="adm-row {{ 'adm-row--done' if e.atendido else '' }}">
+        <div class="adm-meta">
+          <span>#{{ e.id }}</span>
+          <span>{{ e.creado_en.strftime('%Y-%m-%d %H:%M') if e.creado_en else '' }}</span>
+          <span>{{ e.idioma|upper }}</span>
+          {% if e.contacto %}<span>Contacto: <strong>{{ e.contacto }}</strong></span>{% endif %}
+        </div>
+        <div><strong>Motivo:</strong> {{ e.motivo }}</div>
+        {% if e.mensaje %}<div class="muted">"{{ e.mensaje }}"</div>{% endif %}
+        {% if e.contexto %}
+        <details style="margin-top:6px">
+          <summary class="muted" style="cursor:pointer">Ver conversación</summary>
+          <pre style="white-space:pre-wrap;font-size:.82rem;margin:.5rem 0 0">{{ e.contexto }}</pre>
+        </details>
+        {% endif %}
+        <div style="margin-top:10px">
+          {% if e.atendido %}
+            <span class="badge b-conf">Atendido</span>
+          {% else %}
+            <form class="inline" method="post" action="/admin/escalaciones/{{ e.id }}/atender">
+              <button class="btn btn--sm" type="submit">Marcar atendido</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  {# --- Opiniones pendientes --- #}
+  <div class="adm-section">
+    <h2>Opiniones por aprobar
+      {% if pending_reviews %}<span class="adm-count">{{ pending_reviews|length }}</span>{% endif %}
+    </h2>
+    {% if not pending_reviews %}
+      <p class="muted">No hay opiniones pendientes.</p>
+    {% else %}
+    <div class="adm-grid">
+      {% for r in pending_reviews %}
+      <div class="adm-row">
+        <div class="adm-meta">
+          <span>#{{ r.id }}</span>
+          <span>{{ r.creado_en.strftime('%Y-%m-%d') if r.creado_en else '' }}</span>
+          <span>{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</span>
+        </div>
+        <div><strong>{{ r.autor }}</strong>{% if r.pais %} · {{ r.pais }}{% endif %}
+          {% if r.titulo %} — {{ r.titulo }}{% endif %}</div>
+        <div class="muted">{{ r.cuerpo }}</div>
+        <form class="inline" method="post" action="/admin/opiniones/{{ r.id }}/aprobar" style="margin-top:10px">
+          <button class="btn btn--sm" type="submit">Aprobar y publicar</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  {# --- Reservas recientes --- #}
+  <div class="adm-section">
+    <h2>Reservas recientes</h2>
+    {% if not bookings %}
+      <p class="muted">Aún no hay reservas.</p>
+    {% else %}
+    <div style="overflow-x:auto">
+    <table class="adm">
+      <thead>
+        <tr><th>Referencia</th><th>Habitación</th><th>Cliente</th><th>Fechas</th>
+            <th>Valor</th><th>Estado</th></tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td>{{ b.referencia }}</td>
+          <td>{{ b.habitacion.nom_hab if b.habitacion else b.id_hab }}</td>
+          <td>{{ b.cliente.nombre if b.cliente else '' }}<br>
+              <span class="muted" style="font-size:.8rem">{{ b.cliente.correo if b.cliente else '' }}</span></td>
+          <td>{{ b.fecha_in }} → {{ b.fecha_fi }}</td>
+          <td>{{ b.valor | cop }}</td>
+          <td>
+            {% set st = b.estado %}
+            <span class="badge {{ {'pendiente':'b-pend','confirmada':'b-conf','expirada':'b-exp','cancelada':'b-canc'}.get(st,'b-pend') }}">{{ st }}</span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

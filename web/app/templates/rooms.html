@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ t("Habitaciones") }} · {{ hotel.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div class="container">
+    <div class="eyebrow">{{ t("Alojamiento") }}</div>
+    <h1 style="color:var(--ink)">{{ t("Nuestras habitaciones") }}</h1>
+    <div class="breadcrumb"><a href="/">{{ t("Inicio") }}</a> · {{ t("Habitaciones") }}</div>
+  </div>
+</div>
+<section>
+  <div class="container">
+    <div class="rooms-grid" style="margin-top:0">
+      {% for room in rooms %}{% include "_room_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ t("Reserva") }} {{ booking.reference }} · {{ hotel.name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div class="container">
+    <div class="eyebrow">{{ t("Paso final") }}</div>
+    <h1 style="color:var(--ink)">{{ t("Confirma y paga") }}</h1>
+    <div class="breadcrumb">{{ t("Reserva") }} {{ booking.reference }}</div>
+  </div>
+</div>
+
+<section style="padding-top:48px">
+  <div class="container" style="max-width:620px">
+    <div class="card">
+      <h3>{{ t("Resumen de tu reserva") }}</h3>
+      <div class="totals"><span>{{ t("Habitación") }}</span><span>{{ room_name(room) }}</span></div>
+      <div class="totals"><span>{{ t("Entrada") }}</span><span>{{ booking.checkin }}</span></div>
+      <div class="totals"><span>{{ t("Salida") }}</span><span>{{ booking.checkout }}</span></div>
+      <div class="totals"><span>{{ t("Noches") }}</span><span>{{ booking.nights }}</span></div>
+      <div class="totals"><span>{{ t("Huéspedes") }}</span><span>{{ booking.guests }}</span></div>
+      <div class="totals"><span>{{ t("Huésped") }}</span><span>{{ booking.guest_name }}</span></div>
+      <div class="totals" style="font-weight:600;border-top:1px solid var(--line);margin-top:.4rem">
+        <span>{{ t("Total a pagar") }}</span>
+        <span class="price" style="font-size:1.6rem">{{ money(booking.amount_cop) }}</span>
+      </div>
+
+      <div style="margin-top:1.6rem">
+        {% if wompi_ready %}
+        <form action="{{ wompi.checkout_base }}" method="GET">
+          <input type="hidden" name="public-key" value="{{ wompi.public_key }}">
+          <input type="hidden" name="currency" value="{{ wompi.currency }}">
+          <input type="hidden" name="amount-in-cents" value="{{ wompi.amount_in_cents }}">
+          <input type="hidden" name="reference" value="{{ wompi.reference }}">
+          <input type="hidden" name="signature:integrity" value="{{ wompi.signature }}">
+          <input type="hidden" name="redirect-url" value="{{ wompi.redirect_url }}">
+          <input type="hidden" name="customer-data:email" value="{{ booking.guest_email }}">
+          <input type="hidden" name="customer-data:full-name" value="{{ booking.guest_name }}">
+          <button class="btn btn--block" type="submit">Pagar con Wompi · {{ booking.amount_cop|cop }}</button>
+        </form>
+        <p class="muted center" style="font-size:.8rem;margin-top:1rem">
+          Serás redirigido a la pasarela segura de Wompi. No almacenamos datos de tu tarjeta.
+        </p>
+        {% else %}
+        <div class="notice ok">
+          {{ t("Reserva") }} <strong>{{ booking.reference }}</strong> · {{ t("El pago en línea estará disponible muy pronto.") }}
+        </div>
+        <p class="muted">{{ t("Por ahora coordinamos el pago de forma personalizada para confirmar tu estadía. Escríbenos con tu referencia y te ayudamos enseguida.") }}</p>
+        <a class="btn btn--block" href="https://wa.me/{{ hotel.whatsapp }}?text=Casa%20Gracia%20{{ booking.reference }}"
+           target="_blank" rel="noopener">{{ t("Coordinar pago por WhatsApp") }}</a>
+        <a class="btn btn--ghost btn--block" href="/reserva/{{ booking.reference }}/resultado"
+           style="margin-top:.8rem">{{ t("Ver mi reserva") }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

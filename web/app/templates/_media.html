@@ -1,0 +1,12 @@
+{# Responsive image: serves WebP when the browser supports it, falls back to the
+   original JPG otherwise. Use for content <img> tags.
+   Usage: {{ picture("/static/img/rooms/x.jpg", alt="...", cls="room-card__img") }} #}
+{% macro picture(src, alt="", cls="", style="", lazy=true) -%}
+<picture>
+  <source srcset="{{ src | webp }}" type="image/webp">
+  <img src="{{ src }}" alt="{{ alt }}"
+       {%- if cls %} class="{{ cls }}"{% endif %}
+       {%- if style %} style="{{ style }}"{% endif %}
+       {%- if lazy %} loading="lazy" decoding="async"{% endif %}>
+</picture>
+{%- endmacro %}

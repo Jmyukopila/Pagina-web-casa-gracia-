@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin · {{ hotel.name }}</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v={{ asset_v }}">
+</head>
+<body style="background:var(--cream)">
+  <div class="container" style="max-width:420px;padding-top:12vh">
+    <div class="card">
+      <h2 style="margin-top:0">Panel de administración</h2>
+      <p class="muted">Introduce el token de acceso.</p>
+      {% if bad %}<div class="notice err">Token incorrecto.</div>{% endif %}
+      <form method="get" action="/admin" style="margin-top:1rem">
+        <div class="field">
+          <input type="password" name="token" placeholder="ADMIN_TOKEN" autofocus
+                 style="width:100%;box-sizing:border-box">
+        </div>
+        <button class="btn btn--block" type="submit" style="margin-top:1rem">Entrar</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+/* ============================================================
+   Casa Gracia — chat assistant widget
+   Uses brand CSS variables from styles.css (:root).
+   ============================================================ */
+.cg-chat{font-family:'Jost',system-ui,sans-serif}
+
+/* ---- Launcher (bottom-right) ---- */
+.cg-chat__launch{position:fixed;right:22px;bottom:22px;z-index:60;
+  width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  background:var(--caramel);box-shadow:0 10px 26px rgba(184,136,80,.45);
+  transition:transform .2s ease,background .2s ease}
+.cg-chat__launch:hover{transform:scale(1.07);background:var(--caramel-d)}
+.cg-chat.is-open .cg-chat__launch{display:none}
+
+/* ---- Panel ---- */
+.cg-chat__panel{position:fixed;right:22px;bottom:22px;z-index:61;
+  width:370px;max-width:calc(100vw - 32px);height:min(560px,72vh);
+  display:flex;flex-direction:column;overflow:hidden;
+  background:var(--sand);border:1px solid var(--line);border-radius:18px;
+  box-shadow:var(--shadow-lg);animation:cgPop .22s ease}
+.cg-chat__panel[hidden]{display:none}
+@keyframes cgPop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ---- Header ---- */
+.cg-chat__head{display:flex;align-items:center;gap:10px;padding:12px 14px;
+  background:var(--caramel);color:#fff}
+.cg-chat__avatar{width:34px;height:34px;border-radius:50%;flex:none;
+  background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.cg-chat__id{display:flex;flex-direction:column;line-height:1.15;flex:1;min-width:0}
+.cg-chat__id strong{font-size:.95rem;font-weight:600}
+.cg-chat__status{font-size:.72rem;opacity:.9;display:flex;align-items:center;gap:5px}
+.cg-chat__status::before{content:"";width:7px;height:7px;border-radius:50%;
+  background:#7be495;box-shadow:0 0 0 2px rgba(123,228,149,.3)}
+.cg-chat__close{margin-left:auto;background:transparent;border:0;color:#fff;
+  cursor:pointer;padding:4px;border-radius:8px;display:flex;opacity:.9}
+.cg-chat__close:hover{opacity:1;background:rgba(255,255,255,.15)}
+
+/* ---- Messages ---- */
+.cg-chat__body{flex:1;overflow-y:auto;padding:16px;display:flex;
+  flex-direction:column;gap:9px;background:var(--cream)}
+.cg-chat__msg{max-width:84%;padding:9px 13px;border-radius:14px;font-size:.92rem;
+  line-height:1.4;white-space:pre-wrap;word-wrap:break-word;
+  box-shadow:0 1px 1px rgba(46,42,38,.06)}
+.cg-chat__msg a{color:var(--caramel-d);text-decoration:underline;word-break:break-all}
+.cg-chat__msg--bot{align-self:flex-start;background:#fff;color:var(--ink);border-bottom-left-radius:4px}
+.cg-chat__msg--user{align-self:flex-end;background:var(--caramel);color:#fff;border-bottom-right-radius:4px}
+.cg-chat__msg--user a{color:#fff}
+.cg-chat__typing{font-style:italic;color:var(--muted);background:#fff}
+.cg-chat__dots span{display:inline-block;width:6px;height:6px;margin:0 1px;border-radius:50%;
+  background:var(--muted);opacity:.4;animation:cgBlink 1.2s infinite}
+.cg-chat__dots span:nth-child(2){animation-delay:.2s}
+.cg-chat__dots span:nth-child(3){animation-delay:.4s}
+@keyframes cgBlink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+/* ---- Input bar ---- */
+.cg-chat__bar{display:flex;align-items:center;gap:8px;padding:10px;
+  background:var(--sand);border-top:1px solid var(--line)}
+.cg-chat__input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;
+  padding:.6rem .95rem;font-family:inherit;font-size:.95rem;color:var(--ink);
+  background:#fff;outline:none}
+.cg-chat__input:focus{border-color:var(--caramel)}
+.cg-chat__send{flex:none;width:42px;height:42px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--caramel);color:#fff;display:flex;align-items:center;justify-content:center;
+  transition:background .2s}
+.cg-chat__send:hover{background:var(--caramel-d)}
+.cg-chat__send:disabled{opacity:.5;cursor:default}
+
+/* ---- Mobile: near full-screen sheet ---- */
+@media(max-width:480px){
+  .cg-chat__launch{right:16px;bottom:16px;width:52px;height:52px}
+  .cg-chat__panel{right:0;left:0;bottom:0;width:100%;max-width:100%;
+    height:86vh;height:86svh;border-radius:18px 18px 0 0}
+}
+@media(prefers-reduced-motion:reduce){
+  .cg-chat__panel{animation:none}.cg-chat__dots span{animation:none}
+}

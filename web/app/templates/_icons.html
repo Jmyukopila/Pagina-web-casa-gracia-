@@ -1,0 +1,20 @@
+{# Reusable line icons (stroke = currentColor, so they take the brand color).
+   Usage:  {% from "_icons.html" import icon %}  then  {{ icon('pool', 30) }}      #}
+{% macro icon(name, size=20) -%}
+{%- set paths = {
+  'pool':    '<path d="M2 16c1.6 0 2.1 1 3.7 1s2.1-1 3.7-1 2.1 1 3.6 1 2.1-1 3.7-1 2.1 1 3.6 1"/><path d="M2 20c1.6 0 2.1 1 3.7 1s2.1-1 3.7-1 2.1 1 3.6 1 2.1-1 3.7-1 2.1 1 3.6 1"/><path d="M9 13V4.5a2.5 2.5 0 0 1 5 0"/><path d="M9 8h5"/>',
+  'wifi':    '<path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M2 9a15 15 0 0 1 20 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1"/>',
+  'parking': '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9.5 17V7h3.5a3 3 0 0 1 0 6H9.5"/>',
+  'leaf':    '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/>',
+  'user':    '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  'bed':     '<path d="M2 18v-6a2 2 0 0 1 2-2h12a4 4 0 0 1 4 4v4"/><path d="M2 14h20"/><path d="M2 18v-2"/><path d="M22 18v-2"/><circle cx="7" cy="10.5" r="1.5"/>',
+  'area':    '<path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/>',
+  'view':    '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  'check':   '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/>',
+  'clock':   '<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',
+  'alert':   '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>'
+} -%}
+<svg class="icon" width="{{ size }}" height="{{ size }}" viewBox="0 0 24 24" fill="none"
+     stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+     aria-hidden="true">{{ paths.get(name, '') | safe }}</svg>
+{%- endmacro %}

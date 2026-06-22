@@ -1,0 +1,49 @@
+{# Floating hotel assistant. Same-origin POST /api/chat. Icons only (no emoji). #}
+<div id="cg-chat" class="cg-chat"
+     data-typing="{{ t('escribiendo…') }}"
+     data-error="{{ t('Error de conexión. Intenta de nuevo.') }}"
+     data-welcome="{{ t('Hola, soy el asistente de Casa Gracia. ¿En qué puedo ayudarte?') }}">
+
+  <button class="cg-chat__launch" id="cgChatLaunch" type="button" aria-label="{{ t('Abrir chat') }}">
+    <svg class="cg-chat__ic-open" viewBox="0 0 24 24" width="26" height="26" fill="none"
+         stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8A8.38 8.38 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/>
+      <path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/>
+    </svg>
+  </button>
+
+  <section class="cg-chat__panel" id="cgChatPanel" role="dialog"
+           aria-label="{{ t('Asistente del hotel') }}" hidden>
+    <header class="cg-chat__head">
+      <span class="cg-chat__avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8A8.38 8.38 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/>
+        </svg>
+      </span>
+      <div class="cg-chat__id">
+        <strong>{{ t('Asistente') }} · Casa Gracia</strong>
+        <span class="cg-chat__status">{{ t('en línea') }}</span>
+      </div>
+      <button class="cg-chat__close" id="cgChatClose" type="button" aria-label="{{ t('Cerrar') }}">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="cg-chat__body" id="cgChatBody"></div>
+
+    <form class="cg-chat__bar" id="cgChatForm" autocomplete="off">
+      <input class="cg-chat__input" id="cgChatInput" type="text" maxlength="2000"
+             placeholder="{{ t('Escribe tu mensaje…') }}" aria-label="{{ t('Escribe tu mensaje…') }}">
+      <button class="cg-chat__send" id="cgChatSend" type="submit" aria-label="{{ t('Enviar') }}">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </form>
+  </section>
+</div>
