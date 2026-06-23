@@ -3,16 +3,15 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-from fastapi import (APIRouter, BackgroundTasks, Depends, Form, HTTPException,
-                     Request, status)
+from fastapi import APIRouter, BackgroundTasks, Depends, Form, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import crud, i18n, mailer
+from ..config import settings
 from ..database import get_session
 from ..deps import rate_limit, render, t_for
-from ..config import settings
 from ..payments import wompi
 from ..schemas import BookingCreate, ReviewCreate
 
@@ -82,7 +81,7 @@ async def booking_submit(
                              guest_email=guest_email, guest_phone=guest_phone,
                              checkin=checkin, checkout=checkout,
                              guests=guests, notes=notes)
-    except ValidationError as e:
+    except ValidationError:
         rooms = await crud.list_rooms(db)
         room_obj = await crud.get_room(db, room_id)
         return render(request, "booking.html", room=room_obj, rooms=rooms,

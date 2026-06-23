@@ -88,6 +88,38 @@ class Settings(BaseSettings):
     # --- Rate limiting ---------------------------------------------------
     rate_limit_per_minute: int = 60
 
+    # --- Lobby PMS (channel manager) -------------------------------------
+    # Two-way sync: pull OTA reservations + rates from Lobby, push direct
+    # bookings to Lobby. Everything is gated on lobby_enabled (= a token is set),
+    # so with no account the site behaves exactly as before. The token + IP
+    # policy come from Lobby (Configuraciones > Usuarios, Permisos y API).
+    lobby_base_url: str = "https://api.lobbypms.com/api/v2"
+    lobby_api_token: str = ""
+    # Maps local id_hab -> Lobby room/product id, as JSON, e.g.
+    # {"DBL-01": "123", "KNG-02": "124"}. Read both ways via lobby_room_pairs().
+    lobby_room_map: str = ""
+    # Shared secret the Vercel Cron (and admin button) send to POST
+    # /internal/lobby/sync so only authorized callers can trigger a sync.
+    lobby_sync_secret: str = ""
+    # How many days ahead to pull/sync reservations and rates (Lobby caps
+    # occupancy stats at 90 days).
+    lobby_sync_window_days: int = 90
+
+    @property
+    def lobby_enabled(self) -> bool:
+        return bool(self.lobby_api_token)
+
+    def lobby_room_pairs(self) -> dict[str, str]:
+        """Parsed {id_hab: lobby_room_id} map; empty if unset/invalid."""
+        import json
+        if not self.lobby_room_map.strip():
+            return {}
+        try:
+            data = json.loads(self.lobby_room_map)
+        except json.JSONDecodeError:
+            return {}
+        return {str(k): str(v) for k, v in data.items()} if isinstance(data, dict) else {}
+
     @property
     def is_prod(self) -> bool:
         return self.environment.lower() == "production"

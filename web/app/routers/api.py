@@ -8,7 +8,6 @@ from __future__ import annotations
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import crud, i18n
@@ -85,6 +84,8 @@ async def api_room(request: Request, room_id: str,
 async def availability(request: Request, room_id: str, checkin: date, checkout: date,
                       db: AsyncSession = Depends(get_session)):
     await rate_limit(request)
+    if checkin < date.today():
+        raise HTTPException(400, "Check-in cannot be in the past.")
     if checkout <= checkin:
         raise HTTPException(400, "Check-out must be after check-in.")
     room = await crud.get_room(db, room_id)
@@ -127,7 +128,7 @@ async def api_create_booking(request: Request, payload: BookingCreate,
     try:
         booking = await crud.create_booking(db, room, payload)
     except crud.DatesUnavailable:
-        raise HTTPException(409, "Those dates are no longer available.")
+        raise HTTPException(409, "Those dates are no longer available.") from None
     return booking_dict(booking)
 
 

@@ -8,6 +8,7 @@ the migrations in db/ and verified against Supabase, not here.
 from __future__ import annotations
 
 import pytest_asyncio
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
@@ -36,6 +37,35 @@ async def session() -> AsyncSession:
         await s.commit()
         yield s
     await engine.dispose()
+
+
+@pytest_asyncio.fixture
+async def client(session, monkeypatch):
+    """An httpx client wired to the FastAPI app over the in-memory `session`.
+
+    Two things are overridden so requests stay isolated:
+    - the get_session dependency yields the test session (not the configured DB);
+    - the rate limiter (which opens its own SessionLocal, bypassing the override)
+      is neutralised so it never touches a real database and never trips.
+    """
+    from app import crud
+    from app.database import get_session
+    from app.main import app
+
+    async def _override_get_session():
+        yield session
+
+    async def _no_rate_limit(*_args, **_kwargs):
+        return 1  # always under the limit
+
+    app.dependency_overrides[get_session] = _override_get_session
+    monkeypatch.setattr(crud, "hit_rate_limit", _no_rate_limit)
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as c:
+        yield c
+
+    app.dependency_overrides.clear()
 
 
 def make_booking_data(**over):

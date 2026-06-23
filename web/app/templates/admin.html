@@ -21,6 +21,7 @@
     .b-conf{background:#eaf3ee;color:var(--ok)}
     .b-exp{background:#f3efe9;color:#8a7d6c}
     .b-canc{background:#f7e9e7;color:var(--err)}
+    .b-ext{background:#e9eef7;color:#3a567f}
     .adm-section{margin-top:36px}
     .adm-count{background:var(--caramel);color:#fff;border-radius:999px;padding:1px 10px;font-size:.85rem;margin-left:6px}
     .inline{display:inline}
@@ -30,7 +31,14 @@
 <div class="adm-wrap">
   <div class="adm-head">
     <h1 style="margin:0;font-size:1.6rem">Panel · {{ hotel.name }}</h1>
-    <a class="btn btn--ghost btn--sm" href="/admin/salir">Salir</a>
+    <div style="display:flex;gap:8px">
+      {% if lobby_enabled %}
+      <form class="inline" method="post" action="/admin/lobby/sync">
+        <button class="btn btn--sm" type="submit">Sincronizar con Lobby</button>
+      </form>
+      {% endif %}
+      <a class="btn btn--ghost btn--sm" href="/admin/salir">Salir</a>
+    </div>
   </div>
 
   {# --- Escalaciones del chatbot --- #}
@@ -111,7 +119,7 @@
     <table class="adm">
       <thead>
         <tr><th>Referencia</th><th>Habitación</th><th>Cliente</th><th>Fechas</th>
-            <th>Valor</th><th>Estado</th></tr>
+            <th>Valor</th><th>Origen</th><th>Estado</th></tr>
       </thead>
       <tbody>
         {% for b in bookings %}
@@ -122,9 +130,10 @@
               <span class="muted" style="font-size:.8rem">{{ b.cliente.correo if b.cliente else '' }}</span></td>
           <td>{{ b.fecha_in }} → {{ b.fecha_fi }}</td>
           <td>{{ b.valor | cop }}</td>
+          <td><span class="muted" style="font-size:.82rem">{{ b.origen }}</span></td>
           <td>
             {% set st = b.estado %}
-            <span class="badge {{ {'pendiente':'b-pend','confirmada':'b-conf','expirada':'b-exp','cancelada':'b-canc'}.get(st,'b-pend') }}">{{ st }}</span>
+            <span class="badge {{ {'pendiente':'b-pend','confirmada':'b-conf','expirada':'b-exp','cancelada':'b-canc','externa':'b-ext'}.get(st,'b-pend') }}">{{ st }}</span>
           </td>
         </tr>
         {% endfor %}

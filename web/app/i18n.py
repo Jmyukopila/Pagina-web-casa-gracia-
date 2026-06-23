@@ -121,7 +121,6 @@ EN: dict[str, str] = {
     "¡Reserva registrada!": "Booking received!",
     "Tu reserva quedó registrada como pendiente. Te contactaremos para coordinar el pago y confirmarla. También puedes escribirnos por WhatsApp con tu referencia.":
         "Your booking is registered as pending. We'll contact you to arrange payment and confirm it. You can also message us on WhatsApp with your reference.",
-    "Hora de llegada, peticiones especiales…": "Arrival time, special requests…",
     "No pudimos confirmar el pago": "We couldn't confirm the payment",
     "Tu reserva no se completó. Puedes intentar de nuevo o escribirnos por WhatsApp.":
         "Your booking wasn't completed. You can try again or message us on WhatsApp.",

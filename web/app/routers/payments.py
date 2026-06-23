@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import crud
-from ..config import settings
 from ..database import get_session
+from ..deps import is_valid_admin_token
 from ..payments import wompi
 
 router = APIRouter(prefix="/api", tags=["payments"])
@@ -36,7 +36,12 @@ async def wompi_webhook(request: Request, db: AsyncSession = Depends(get_session
         # Defensive: confirm the paid amount matches what we expected.
         if tx["amount_in_cents"] and int(tx["amount_in_cents"]) != booking.amount_cents:
             raise HTTPException(status_code=400, detail="Amount mismatch")
-        await crud.set_booking_status(db, reference, "confirmada", tx["id"])
+        confirmed = await crud.set_booking_status(db, reference, "confirmada", tx["id"])
+        # Push the confirmed direct booking to Lobby so it blocks every channel
+        # (no-op if Lobby is disabled or it was already pushed).
+        if confirmed is not None:
+            from ..lobby.sync import push_booking
+            await push_booking(db, confirmed)
     elif tx["status"] in {"DECLINED", "VOIDED", "ERROR"}:
         await crud.set_booking_status(db, reference, "cancelada", tx["id"])
 
@@ -46,7 +51,7 @@ async def wompi_webhook(request: Request, db: AsyncSession = Depends(get_session
 @router.post("/reviews/{review_id}/approve")
 async def approve_review(review_id: int, x_admin_token: str = Header(default=""),
                         db: AsyncSession = Depends(get_session)):
-    if x_admin_token != settings.admin_token:
+    if not is_valid_admin_token(x_admin_token):
         raise HTTPException(status_code=403, detail="Forbidden")
     ok = await crud.approve_review(db, review_id)
     if not ok:

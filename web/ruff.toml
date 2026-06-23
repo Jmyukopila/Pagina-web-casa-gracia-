@@ -1,0 +1,20 @@
+# Ruff config for the web app. Conservative rule set aligned with the existing
+# style (FastAPI + SQLAlchemy async). Tighten over time.
+target-version = "py311"
+line-length = 100
+
+exclude = [".venv", "__pycache__", ".pytest_cache", "tools"]
+
+[lint]
+# E/W: pycodestyle, F: pyflakes, I: import sorting, UP: pyupgrade,
+# B: bugbear. Keep it pragmatic so CI stays green and useful.
+select = ["E", "W", "F", "I", "UP", "B"]
+ignore = [
+    "E501",   # line length is handled by formatter intent, not enforced hard
+    "B008",   # Depends()/Query()/Header() in defaults is the FastAPI idiom
+    "E402",   # main.py / api/index.py intentionally run setup before imports
+]
+
+[lint.per-file-ignores]
+# Tests favour brevity; allow unused fixtures-as-args patterns etc. if needed.
+"tests/*" = ["B011"]

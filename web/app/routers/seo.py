@@ -9,10 +9,9 @@ from __future__ import annotations
 from datetime import date
 from xml.sax.saxutils import escape
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import Depends
 
 from .. import crud
 from ..config import settings

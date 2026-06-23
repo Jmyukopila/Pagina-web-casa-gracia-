@@ -1,8 +1,6 @@
 """Tests for the distributed (DB-backed) rate-limit counter."""
 from __future__ import annotations
 
-import pytest
-
 from app import crud
 
 

@@ -5,7 +5,7 @@ import random
 import re
 import secrets
 import time
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy import and_, func, or_, select, text, update
 from sqlalchemy.exc import IntegrityError
@@ -14,7 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .models import Cliente, Escalacion, Habitacion, Opinion, Reserva
 
 HOLD_MINUTES = 20
-ACTIVE_STATES = ("pendiente", "confirmada")
+# States that occupy a room: a confirmed/pending direct booking or an 'externa'
+# reservation imported from an OTA via Lobby. All of these block the dates.
+ACTIVE_STATES = ("pendiente", "confirmada", "externa")
 
 
 class DatesUnavailable(Exception):
@@ -24,7 +26,7 @@ class DatesUnavailable(Exception):
 
 def _utcnow() -> datetime:
     # timezone-aware UTC (utcnow() is naive and deprecated on 3.12+).
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 # --- Habitaciones ----------------------------------------------------------
@@ -48,6 +50,7 @@ def _active_filter():
     now = _utcnow()
     return or_(
         Reserva.estado == "confirmada",
+        Reserva.estado == "externa",   # imported OTA booking (always blocks)
         and_(Reserva.estado == "pendiente",
              or_(Reserva.hold_expira.is_(None), Reserva.hold_expira > now)),
     )
@@ -140,7 +143,7 @@ async def create_booking(db: AsyncSession, room: Habitacion, data) -> Reserva:
     except IntegrityError:
         # Lost the race: another booking grabbed these dates (EXCLUDE constraint).
         await db.rollback()
-        raise DatesUnavailable()
+        raise DatesUnavailable() from None
     await db.refresh(reserva)
     return reserva
 
@@ -163,6 +166,80 @@ async def set_booking_status(db: AsyncSession, referencia: str, estado: str,
     await db.commit()
     await db.refresh(reserva)
     return reserva
+
+
+# --- Lobby PMS sync --------------------------------------------------------
+async def get_booking_by_lobby_code(db: AsyncSession, code: str) -> Reserva | None:
+    res = await db.execute(select(Reserva).where(Reserva.lobby_code == code))
+    return res.scalar_one_or_none()
+
+
+async def upsert_external_reservation(db: AsyncSession, norm: dict) -> Reserva:
+    """Create/update the local blocking row for an OTA reservation imported from
+    Lobby. Idempotent on `lobby_code`. Cancelled ones are flipped to 'cancelada'
+    so the dates free up. Our own pushed bookings (origen='directo') are left
+    untouched, so we never re-import what we exported."""
+    code = norm["lobby_code"]
+    existing = await get_booking_by_lobby_code(db, code)
+    new_state = "cancelada" if norm["cancelled"] else "externa"
+
+    if existing is not None:
+        if existing.origen == "directo":
+            return existing      # ours: don't let the mirror overwrite it
+        existing.estado = new_state
+        existing.fecha_in = norm["checkin"]
+        existing.fecha_fi = norm["checkout"]
+        existing.n_adultos = norm["adults"]
+        existing.n_ninos = norm["children"]
+        existing.lobby_synced_en = _utcnow()
+        await db.commit()
+        await db.refresh(existing)
+        return existing
+
+    cli = await _get_or_create_cliente(db, norm["guest_name"], norm["guest_email"],
+                                       norm["guest_phone"])
+    reserva = Reserva(
+        referencia=f"LB-{code}"[:40],
+        id_cliente=cli.id,
+        id_hab=norm["id_hab"],
+        fecha_in=norm["checkin"],
+        fecha_fi=norm["checkout"],
+        n_adultos=norm["adults"],
+        n_ninos=norm["children"],
+        valor=norm["amount"],
+        moneda="COP",
+        estado=new_state,
+        origen="lobby",
+        lobby_code=code,
+        lobby_synced_en=_utcnow(),
+    )
+    db.add(reserva)
+    await db.commit()
+    await db.refresh(reserva)
+    return reserva
+
+
+async def mark_booking_pushed(db: AsyncSession, reserva: Reserva,
+                              lobby_code: str) -> Reserva:
+    """Record that a direct booking now exists in Lobby (makes push idempotent)."""
+    reserva.lobby_code = lobby_code
+    reserva.lobby_synced_en = _utcnow()
+    await db.commit()
+    await db.refresh(reserva)
+    return reserva
+
+
+async def update_room_price(db: AsyncSession, id_hab: str, price: int | None,
+                            active: bool | None = None) -> bool:
+    room = await db.get(Habitacion, id_hab)
+    if not room:
+        return False
+    if price is not None and price >= 0:
+        room.precio_noche = price
+    if active is not None:
+        room.activa = active
+    await db.commit()
+    return True
 
 
 # --- Opiniones -------------------------------------------------------------

@@ -11,8 +11,6 @@ always rejected. /api/ is disallowed in robots.txt.
 """
 from __future__ import annotations
 
-import secrets
-
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,19 +18,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .. import crud
 from ..config import settings
 from ..database import get_session
+from ..deps import is_valid_admin_token as _valid
 from ..deps import render
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 ui_router = APIRouter(prefix="/admin", tags=["admin-ui"])
 
 COOKIE = "cg_admin"
-
-
-def _valid(token: str) -> bool:
-    expected = settings.admin_token
-    if not expected or expected == "change-me-admin-token" or not token:
-        return False
-    return secrets.compare_digest(token, expected)
 
 
 # --- JSON API --------------------------------------------------------------
@@ -86,7 +78,7 @@ async def dashboard(request: Request, token: str = Query(default=""),
 
     resp = render(request, "admin.html", bookings=bookings,
                   pending_reviews=pending_reviews, escalations=escalations,
-                  pending_count=pending_count)
+                  pending_count=pending_count, lobby_enabled=settings.lobby_enabled)
     if token:  # arrived via ?token= -> remember it (12h, httpOnly).
         resp.set_cookie(COOKIE, tok, httponly=True, samesite="lax",
                         max_age=43200, secure=settings.is_prod)
@@ -106,6 +98,14 @@ async def attend_escalation(esc_id: int,
 async def approve_review(review_id: int,
                          db: AsyncSession = Depends(get_session)):
     await crud.approve_review(db, review_id)
+    return RedirectResponse("/admin", status_code=303)
+
+
+@ui_router.post("/lobby/sync", dependencies=[Depends(_require_ui)])
+async def lobby_sync_now(db: AsyncSession = Depends(get_session)):
+    """Manual 'Sync with Lobby' button on the dashboard (cookie/token auth)."""
+    from ..lobby.sync import run_full_sync
+    await run_full_sync(db)
     return RedirectResponse("/admin", status_code=303)
 
 

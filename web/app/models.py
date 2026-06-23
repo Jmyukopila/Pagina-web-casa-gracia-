@@ -9,8 +9,17 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
-from sqlalchemy import (Boolean, Date, DateTime, ForeignKey, Integer,
-                        SmallInteger, String, Text, func)
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    SmallInteger,
+    String,
+    Text,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
@@ -92,11 +101,19 @@ class Reserva(Base):
     notas: Mapped[str | None] = mapped_column(String(500), nullable=True)
     hold_expira: Mapped[datetime | None] = mapped_column(DateTime(timezone=True),
                                                         nullable=True)
+    # Channel manager (Lobby PMS) sync metadata.
+    #   origen: 'directo' (this site) | 'lobby' (imported from an OTA/Lobby)
+    #   lobby_code: the reservation code in Lobby (set once pushed/imported)
+    origen: Mapped[str] = mapped_column(String(10), default="directo", index=True)
+    lobby_code: Mapped[str | None] = mapped_column(String(40), nullable=True,
+                                                   unique=True, index=True)
+    lobby_synced_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True),
+                                                             nullable=True)
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),
                                                 server_default=func.now())
 
-    cliente: Mapped["Cliente"] = relationship(lazy="selectin")
-    habitacion: Mapped["Habitacion"] = relationship(lazy="selectin")
+    cliente: Mapped[Cliente] = relationship(lazy="selectin")
+    habitacion: Mapped[Habitacion] = relationship(lazy="selectin")
 
     # --- template-compatibility aliases ---
     @property

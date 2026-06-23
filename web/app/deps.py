@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import secrets
 import time
 from collections import defaultdict, deque
 from pathlib import Path
@@ -64,6 +65,15 @@ GLOBAL_CONTEXT = {
     # browsers always fetch the latest CSS/JS after a deploy/restart.
     "asset_v": int(time.time()),
 }
+
+
+def is_valid_admin_token(token: str) -> bool:
+    """Constant-time check of an admin token. The placeholder default is always
+    rejected, so an unconfigured deploy can't be administered by guessing it."""
+    expected = settings.admin_token
+    if not expected or expected == "change-me-admin-token" or not token:
+        return False
+    return secrets.compare_digest(token, expected)
 
 
 def t_for(request: Request):

@@ -5,19 +5,39 @@ from datetime import date
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
+# Longest stay we accept in a single booking (guards typos / abuse).
+MAX_NIGHTS = 30
+
+
+def _not_in_past(v: date) -> date:
+    if v < date.today():
+        raise ValueError("checkin cannot be in the past")
+    return v
+
+
+def _check_range(checkout: date, checkin: date | None) -> date:
+    if checkin:
+        if checkout <= checkin:
+            raise ValueError("checkout must be after checkin")
+        if (checkout - checkin).days > MAX_NIGHTS:
+            raise ValueError(f"stay cannot exceed {MAX_NIGHTS} nights")
+    return checkout
+
 
 class AvailabilityQuery(BaseModel):
     room_id: str
     checkin: date
     checkout: date
 
+    @field_validator("checkin")
+    @classmethod
+    def _checkin_not_past(cls, v: date) -> date:
+        return _not_in_past(v)
+
     @field_validator("checkout")
     @classmethod
     def _order(cls, v: date, info):
-        ci = info.data.get("checkin")
-        if ci and v <= ci:
-            raise ValueError("checkout must be after checkin")
-        return v
+        return _check_range(v, info.data.get("checkin"))
 
 
 class AvailabilityResult(BaseModel):
@@ -38,13 +58,15 @@ class BookingCreate(BaseModel):
     guests: int = Field(ge=1, le=10)
     notes: str = Field(default="", max_length=500)
 
+    @field_validator("checkin")
+    @classmethod
+    def _checkin_not_past(cls, v: date) -> date:
+        return _not_in_past(v)
+
     @field_validator("checkout")
     @classmethod
     def _order(cls, v: date, info):
-        ci = info.data.get("checkin")
-        if ci and v <= ci:
-            raise ValueError("checkout must be after checkin")
-        return v
+        return _check_range(v, info.data.get("checkin"))
 
 
 class BookingOut(BaseModel):

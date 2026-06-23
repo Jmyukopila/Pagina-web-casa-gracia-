@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from app.chat.prefilter import _data, detect_lang, quick_answer, _normalize
+from app.chat.prefilter import _data, _normalize, detect_lang, quick_answer
 
 
 def _answers_for(lang: str) -> set[str]:

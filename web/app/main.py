@@ -26,7 +26,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from .config import settings
 from .database import init_db
 from .deps import render
-from .routers import admin, api, chat, pages, payments, seo
+from .routers import admin, api, chat, internal, pages, payments, seo
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("casagracia")
@@ -70,6 +70,7 @@ app.include_router(payments.router)
 app.include_router(seo.router)
 app.include_router(admin.router)
 app.include_router(admin.ui_router)
+app.include_router(internal.router)
 
 
 @app.get("/health", include_in_schema=False)
@@ -107,6 +108,27 @@ async def language(request: Request, call_next):
     return response
 
 
+# Content-Security-Policy. Inline styles/scripts are pervasive in the templates
+# (inline config, onclick handlers, JSON-LD), so 'unsafe-inline' is allowed for
+# now; the real wins are locking down sources, base-uri, framing and form posts
+# (Wompi checkout is a GET form to checkout.wompi.co). Shipped as Report-Only
+# first so violations surface in the console without breaking the site; flip the
+# header name to "Content-Security-Policy" to enforce once verified.
+CSP_POLICY = "; ".join([
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data:",
+    "connect-src 'self'",
+    "form-action 'self' https://checkout.wompi.co",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "object-src 'none'",
+])
+CSP_HEADER = "Content-Security-Policy-Report-Only"
+
+
 # Lightweight security headers on every response.
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
@@ -114,6 +136,7 @@ async def security_headers(request: Request, call_next):
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault(CSP_HEADER, CSP_POLICY)
     return response
 
 

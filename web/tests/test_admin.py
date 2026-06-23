@@ -1,8 +1,6 @@
 """Tests for admin crud helpers (escalation queue, pending reviews, bookings)."""
 from __future__ import annotations
 
-import pytest
-
 from app import crud
 from app.schemas import ReviewCreate
 from tests.conftest import make_booking_data

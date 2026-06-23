@@ -3,8 +3,6 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-import pytest
-
 from app import crud
 from app.models import Reserva
 from tests.conftest import make_booking_data
