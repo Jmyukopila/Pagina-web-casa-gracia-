@@ -17,6 +17,7 @@
   var TYPING = root.dataset.typing || "…";
   var WELCOME = root.dataset.welcome || "";
   var ERROR = root.dataset.error || "Error";
+  var LANG = root.dataset.lang === "en" ? "en" : "es";  // page language
   var STORE_KEY = "cgChatHistory";
   var MAX_KEEP = 30;        // turns kept in storage
   var MAX_SEND = 16;        // prior turns sent to the server
@@ -54,7 +55,7 @@
 
   function bubble(text, who) {
     var div = document.createElement("div");
-    div.className = "cg-chat__msg cg-chat__msg--" + who;
+    div.className = "cg-chat__msg cg-chat__msg--" + who + " cg-chat__msg--in";
     fillText(div, text);
     body.appendChild(div);
     body.scrollTop = body.scrollHeight;
@@ -100,7 +101,7 @@
       var r = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: prior })
+        body: JSON.stringify({ message: text, history: prior, lang: LANG })
       });
       var data = await r.json();
       tip.remove();

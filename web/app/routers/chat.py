@@ -24,9 +24,12 @@ router = APIRouter(prefix="/api", tags=["chat"])
 _WA = f"https://wa.me/{settings.hotel_whatsapp}" if settings.hotel_whatsapp else ""
 
 
-def _fallback(text: str) -> str:
-    """Friendly bilingual message when the AI can't answer right now."""
-    if detect_lang(text.lower()) == "en":
+def _fallback(text: str, lang: str | None = None) -> str:
+    """Friendly message when the AI can't answer right now.
+
+    Uses the page `lang` when given; otherwise detects from the message."""
+    use_lang = lang if lang in ("es", "en") else detect_lang(text.lower())
+    if use_lang == "en":
         msg = "Sorry, I can't answer automatically right now."
         if _WA:
             msg += f" You can reach reception on WhatsApp: {_WA}"
@@ -41,22 +44,24 @@ def _fallback(text: str) -> str:
 async def chat(request: Request, payload: ChatRequest,
                db: AsyncSession = Depends(get_session)):
     await rate_limit(request, max_per_minute=20)
+    lang = payload.lang  # page language ("es"/"en"), already normalized
     text = payload.message.strip()
     if not text:
-        return {"reply": "¿En qué puedo ayudarte?", "source": "empty"}
+        empty = "How can I help you?" if lang == "en" else "¿En qué puedo ayudarte?"
+        return {"reply": empty, "source": "empty"}
 
-    # 1) Fixed FAQ answers (0 tokens).
-    canned = quick_answer(text)
+    # 1) Fixed FAQ answers (0 tokens), in the page language.
+    canned = quick_answer(text, lang=lang)
     if canned is not None:
         return {"reply": canned, "source": "faq"}
 
     # 2) LLM (only if a provider is configured).
     if not settings.chat_enabled:
-        return {"reply": _fallback(text), "source": "disabled"}
+        return {"reply": _fallback(text, lang), "source": "disabled"}
     try:
         history = [t.model_dump() for t in payload.history]
-        reply = await engine.generate_reply(db, history, text)
+        reply = await engine.generate_reply(db, history, text, lang=lang)
     except Exception:
         log.exception("Chat generation failed")
-        reply = _fallback(text)
+        reply = _fallback(text, lang)
     return {"reply": reply, "source": "ai"}

@@ -100,3 +100,11 @@ class ChatTurn(BaseModel):
 class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=2000)
     history: list[ChatTurn] = Field(default_factory=list, max_length=20)
+    # Page language (ES/EN). Drives the reply language deterministically; any
+    # value that doesn't start with "en" normalizes to "es" so it never breaks.
+    lang: str = "es"
+
+    @field_validator("lang")
+    @classmethod
+    def _normalize_lang(cls, v: str) -> str:
+        return "en" if (v or "").strip().lower().startswith("en") else "es"
