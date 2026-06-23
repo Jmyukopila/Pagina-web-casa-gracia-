@@ -18,7 +18,9 @@
   var WELCOME = root.dataset.welcome || "";
   var ERROR = root.dataset.error || "Error";
   var LANG = root.dataset.lang === "en" ? "en" : "es";  // page language
-  var STORE_KEY = "cgChatHistory";
+  // Separate history per language: the EN and ES sites keep distinct threads,
+  // so switching language never mixes Spanish and English replies.
+  var STORE_KEY = "cgChatHistory:" + LANG;
   var MAX_KEEP = 30;        // turns kept in storage
   var MAX_SEND = 16;        // prior turns sent to the server
 
