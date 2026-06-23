@@ -7,6 +7,6 @@
     { "src": "/(.*)", "dest": "api/index.py" }
   ],
   "crons": [
-    { "path": "/internal/lobby/sync", "schedule": "*/15 * * * *" }
+    { "path": "/internal/lobby/sync", "schedule": "0 9 * * *" }
   ]
 }
