@@ -11,7 +11,7 @@ from sqlalchemy import and_, func, or_, select, text, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .models import Cliente, Escalacion, Habitacion, Opinion, Reserva
+from .models import Cliente, Escalacion, Habitacion, Opinion, Reserva, RespuestaChat
 
 HOLD_MINUTES = 20
 # States that occupy a room: a confirmed/pending direct booking or an 'externa'
@@ -307,13 +307,15 @@ def extract_contact(text: str) -> str | None:
 async def create_escalation(db: AsyncSession, *, motivo: str,
                             mensaje: str | None = None, idioma: str = "es",
                             contexto: str | None = None,
-                            contacto: str | None = None) -> Escalacion:
+                            contacto: str | None = None,
+                            thread_id: str | None = None) -> Escalacion:
     esc = Escalacion(
         motivo=(motivo or "Sin especificar")[:2000],
         mensaje=(mensaje or None),
         idioma=idioma if idioma in ("es", "en") else "es",
         contexto=contexto,
         contacto=contacto,
+        thread_id=(thread_id or None),
     )
     db.add(esc)
     await db.commit()
@@ -330,6 +332,10 @@ async def list_escalations(db: AsyncSession, pending_only: bool = False,
     return list(res.scalars().all())
 
 
+async def get_escalation(db: AsyncSession, esc_id: int) -> Escalacion | None:
+    return await db.get(Escalacion, esc_id)
+
+
 async def mark_escalation_attended(db: AsyncSession, esc_id: int) -> bool:
     esc = await db.get(Escalacion, esc_id)
     if not esc:
@@ -337,6 +343,32 @@ async def mark_escalation_attended(db: AsyncSession, esc_id: int) -> bool:
     esc.atendido = True
     await db.commit()
     return True
+
+
+# --- Respuestas en vivo del chat (admin -> widget) ------------------------
+async def create_chat_reply(db: AsyncSession, thread_id: str,
+                            texto: str) -> RespuestaChat:
+    """Queue a human reply for a chat thread; the guest's widget polls it."""
+    reply = RespuestaChat(thread_id=thread_id[:40], texto=(texto or "")[:4000])
+    db.add(reply)
+    await db.commit()
+    await db.refresh(reply)
+    return reply
+
+
+async def list_chat_replies(db: AsyncSession, thread_id: str,
+                            after_id: int = 0,
+                            limit: int = 20) -> list[RespuestaChat]:
+    """Human replies for a thread with id greater than the polling cursor."""
+    if not thread_id:
+        return []
+    stmt = (select(RespuestaChat)
+            .where(RespuestaChat.thread_id == thread_id,
+                   RespuestaChat.id > after_id)
+            .order_by(RespuestaChat.id.asc())
+            .limit(limit))
+    res = await db.execute(stmt)
+    return list(res.scalars().all())
 
 
 # --- Admin views -----------------------------------------------------------

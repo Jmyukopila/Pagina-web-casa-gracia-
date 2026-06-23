@@ -103,8 +103,17 @@ class ChatRequest(BaseModel):
     # Page language (ES/EN). Drives the reply language deterministically; any
     # value that doesn't start with "en" normalizes to "es" so it never breaks.
     lang: str = "es"
+    # Browser conversation thread (a client UUID) so a human reply from the admin
+    # can be delivered back into this widget. Optional; trimmed to <=40 chars.
+    thread_id: str | None = None
 
     @field_validator("lang")
     @classmethod
     def _normalize_lang(cls, v: str) -> str:
         return "en" if (v or "").strip().lower().startswith("en") else "es"
+
+    @field_validator("thread_id")
+    @classmethod
+    def _clean_thread(cls, v: str | None) -> str | None:
+        v = (v or "").strip()
+        return v[:40] or None

@@ -129,7 +129,7 @@ async def _check_availability(db: AsyncSession, check_in: str, check_out: str,
 
 
 async def _escalate(db: AsyncSession, reason: str, user_text: str,
-                    context: str) -> dict:
+                    context: str, thread_id: str | None = None) -> dict:
     # Persist the hand-off so reception never loses it. Never let a DB hiccup
     # break the chat reply.
     try:
@@ -138,6 +138,7 @@ async def _escalate(db: AsyncSession, reason: str, user_text: str,
             db, motivo=reason, mensaje=(user_text or None), idioma=lang,
             contexto=(context or None),
             contacto=crud.extract_contact(f"{user_text or ''} {context or ''}"),
+            thread_id=thread_id,
         )
     except Exception:
         log.exception("Could not persist chatbot escalation")
@@ -165,7 +166,8 @@ def _missing(args: dict, required: list[str]) -> str | None:
 
 
 async def run_tool(name: str, args: dict, db: AsyncSession,
-                   user_text: str = "", context: str = "") -> str:
+                   user_text: str = "", context: str = "",
+                   thread_id: str | None = None) -> str:
     """Execute a tool and return its JSON-serialized result. Never raises."""
     if not isinstance(args, dict):
         args = {}
@@ -178,7 +180,7 @@ async def run_tool(name: str, args: dict, db: AsyncSession,
                                          _as_int(args.get("guests"), 2)))
     elif name == "escalate_to_human":
         out = await _escalate(db, args.get("reason", "Sin especificar"),
-                              user_text, context)
+                              user_text, context, thread_id)
     else:
         out = {"error": f"Herramienta desconocida: {name}"}
     return json.dumps(out, ensure_ascii=False)

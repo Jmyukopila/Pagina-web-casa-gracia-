@@ -156,7 +156,23 @@ class Escalacion(Base):
     idioma: Mapped[str] = mapped_column(String(2), default="es")
     contexto: Mapped[str | None] = mapped_column(Text, nullable=True)
     contacto: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    # Browser conversation thread (a client UUID) so a human reply written from
+    # the admin can be delivered back into that guest's live chat widget.
+    thread_id: Mapped[str | None] = mapped_column(String(40), nullable=True, index=True)
     atendido: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),
+                                                server_default=func.now())
+
+
+class RespuestaChat(Base):
+    """A human reply queued for a chat thread. The guest's widget polls these by
+    `thread_id` (an unguessable client UUID) and renders them as bot bubbles.
+    `id` is monotonic and doubles as the polling cursor."""
+    __tablename__ = "respuesta_chat"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    thread_id: Mapped[str] = mapped_column(String(40), index=True)
+    texto: Mapped[str] = mapped_column(Text)
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),
                                                 server_default=func.now())
 

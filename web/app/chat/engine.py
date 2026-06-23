@@ -38,7 +38,8 @@ def _get_chain() -> list[dict]:
 
 
 async def _clean_leaked_tools(content: str, db: AsyncSession,
-                              user_text: str = "", context: str = "") -> str:
+                              user_text: str = "", context: str = "",
+                              thread_id: str | None = None) -> str:
     if "<function=" not in content:
         return content
     for name, raw_args in _TEXT_TOOL_RE.findall(content):
@@ -46,7 +47,8 @@ async def _clean_leaked_tools(content: str, db: AsyncSession,
             args = json.loads(raw_args) if raw_args else {}
         except json.JSONDecodeError:
             args = {}
-        await run_tool(name, args, db, user_text=user_text, context=context)  # side effect only
+        await run_tool(name, args, db, user_text=user_text, context=context,
+                       thread_id=thread_id)  # side effect only
     return _TEXT_TOOL_RE.sub("", content).strip()
 
 
@@ -72,11 +74,12 @@ async def _complete(messages: list[dict]):
 
 
 async def generate_reply(db: AsyncSession, history: list[dict], user_text: str,
-                         lang: str = "es") -> str:
+                         lang: str = "es", thread_id: str | None = None) -> str:
     """Reply to user_text given prior turns (each {'role','content'}).
 
     `lang` ("es"/"en") is the page language and fixes the reply language.
-    Stateless on memory; reads the live DB for availability via tools."""
+    `thread_id` (browser conversation id) is stored on any escalation so a human
+    can reply into this widget. Stateless on memory; reads the live DB via tools."""
     messages: list[dict] = [{"role": "system", "content": system_prompt(lang)}]
     recent: list[str] = []
     for m in history[-settings.llm_history_limit:]:
@@ -94,7 +97,8 @@ async def generate_reply(db: AsyncSession, history: list[dict], user_text: str,
         msg = await _complete(messages)
         if not msg.tool_calls:
             reply = (await _clean_leaked_tools(msg.content or "", db,
-                                               user_text, context)).strip()
+                                               user_text, context,
+                                               thread_id)).strip()
             if reply:
                 return reply
             return ("Sorry, could you say that again?" if lang == "en"
@@ -113,7 +117,8 @@ async def generate_reply(db: AsyncSession, history: list[dict], user_text: str,
                 "role": "tool",
                 "tool_call_id": tc.id,
                 "content": await run_tool(tc.function.name, args, db,
-                                          user_text=user_text, context=context),
+                                          user_text=user_text, context=context,
+                                          thread_id=thread_id),
             })
 
     return ("I'm having trouble completing that. I'd recommend messaging reception on WhatsApp."
