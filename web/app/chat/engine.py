@@ -71,11 +71,13 @@ async def _complete(messages: list[dict]):
     raise RuntimeError(f"All LLM providers failed: {last_error}")
 
 
-async def generate_reply(db: AsyncSession, history: list[dict], user_text: str) -> str:
+async def generate_reply(db: AsyncSession, history: list[dict], user_text: str,
+                         lang: str = "es") -> str:
     """Reply to user_text given prior turns (each {'role','content'}).
 
+    `lang` ("es"/"en") is the page language and fixes the reply language.
     Stateless on memory; reads the live DB for availability via tools."""
-    messages: list[dict] = [{"role": "system", "content": system_prompt()}]
+    messages: list[dict] = [{"role": "system", "content": system_prompt(lang)}]
     recent: list[str] = []
     for m in history[-settings.llm_history_limit:]:
         role = m.get("role")
@@ -93,7 +95,10 @@ async def generate_reply(db: AsyncSession, history: list[dict], user_text: str) 
         if not msg.tool_calls:
             reply = (await _clean_leaked_tools(msg.content or "", db,
                                                user_text, context)).strip()
-            return reply or "Disculpa, ¿puedes repetirlo?"
+            if reply:
+                return reply
+            return ("Sorry, could you say that again?" if lang == "en"
+                    else "Disculpa, ¿puedes repetirlo?")
         messages.append({
             "role": "assistant",
             "content": msg.content or "",
@@ -111,4 +116,6 @@ async def generate_reply(db: AsyncSession, history: list[dict], user_text: str) 
                                           user_text=user_text, context=context),
             })
 
-    return "Estoy teniendo un problema para completar eso. Te recomiendo escribir a recepción por WhatsApp."
+    return ("I'm having trouble completing that. I'd recommend messaging reception on WhatsApp."
+            if lang == "en"
+            else "Estoy teniendo un problema para completar eso. Te recomiendo escribir a recepción por WhatsApp.")

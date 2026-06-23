@@ -111,8 +111,11 @@ def _pick(answer, lang: str) -> str:
     return answer
 
 
-def quick_answer(user_text: str) -> str | None:
-    """Fixed reply if the message matches a rule, else None."""
+def quick_answer(user_text: str, lang: str | None = None) -> str | None:
+    """Fixed reply if the message matches a rule, else None.
+
+    If `lang` ("es"/"en") is given (the page language), the answer is returned in
+    that language; otherwise it falls back to keyword detection on the message."""
     data = _data()
     if not data:
         return None
@@ -120,7 +123,7 @@ def quick_answer(user_text: str) -> str | None:
     tokens = _tokens(norm)
     wordset = set(tokens)
     joined = " ".join(tokens)
-    lang = detect_lang(norm)
+    lang = lang if lang in ("es", "en") else detect_lang(norm)
 
     for key in ("greetings", "thanks"):
         block = data.get(key)

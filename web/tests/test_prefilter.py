@@ -65,3 +65,24 @@ def test_availability_questions_are_not_intercepted():
                 "how much for 2 nights?",
                 "tienen disponibilidad para el otro fin de semana?"]:
         assert quick_answer(msg) is None, msg
+
+
+def test_page_lang_overrides_message_language():
+    """The page language wins over keyword detection of the message text."""
+    # Spanish wording, but the page is English -> English answer.
+    ans = quick_answer("tienen parqueadero?", lang="en")
+    if ans is not None:
+        assert ans in _answers_for("en")
+        assert ans not in _answers_for("es")
+    # English wording, but the page is Spanish -> Spanish answer.
+    ans = quick_answer("do you have parking?", lang="es")
+    if ans is not None:
+        assert ans in _answers_for("es")
+        assert ans not in _answers_for("en")
+
+
+def test_invalid_lang_falls_back_to_detection():
+    """An unexpected lang value must not crash; it falls back to detection."""
+    ans = quick_answer("do you have parking?", lang="fr")
+    if ans is not None:
+        assert ans in _answers_for("en")  # detected from the English wording
