@@ -25,42 +25,58 @@
   var MAX_SEND = 16;        // prior turns sent to the server
   var POLL_MS = 6000;       // how often we check for human replies
 
+  // Persist ACROSS sessions (survives tab close / browser restart) so a human
+  // reply queued while the guest was away shows up next time they open the chat.
+  // Falls back to an in-memory store if localStorage is blocked (private mode).
+  var store = (function () {
+    var mem = {};
+    try {
+      var k = "__cg_probe__";
+      window.localStorage.setItem(k, "1");
+      window.localStorage.removeItem(k);
+      return window.localStorage;
+    } catch (e) {
+      return {
+        getItem: function (key) { return key in mem ? mem[key] : null; },
+        setItem: function (key, val) { mem[key] = String(val); },
+        removeItem: function (key) { delete mem[key]; }
+      };
+    }
+  })();
+
+  var REPLY_CURSOR_KEY = "cgChatReplyCursor";
+  var pollTimer = null;
+
   // One conversation thread per browser (shared across languages) so a human
   // reply from the admin reaches this widget regardless of the current page lang.
   var THREAD_ID = thread();
-  var REPLY_CURSOR_KEY = "cgChatReplyCursor";
   var replyCursor = loadCursor();
-  var pollTimer = null;
-
   var history = load();
   var started = false;
 
   function thread() {
-    try {
-      var t = sessionStorage.getItem("cgChatThread");
-      if (!t) {
-        t = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
-          : "t-" + Date.now() + "-" + Math.random().toString(36).slice(2);
-        sessionStorage.setItem("cgChatThread", t);
-      }
-      return t;
-    } catch (e) { return "t-" + Date.now(); }
+    var t = store.getItem("cgChatThread");
+    if (!t) {
+      t = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+        : "t-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+      store.setItem("cgChatThread", t);
+    }
+    return t;
   }
   function loadCursor() {
-    try { return parseInt(sessionStorage.getItem(REPLY_CURSOR_KEY), 10) || 0; }
-    catch (e) { return 0; }
+    return parseInt(store.getItem(REPLY_CURSOR_KEY), 10) || 0;
   }
   function saveCursor() {
-    try { sessionStorage.setItem(REPLY_CURSOR_KEY, String(replyCursor)); }
+    try { store.setItem(REPLY_CURSOR_KEY, String(replyCursor)); }
     catch (e) { /* ignore */ }
   }
 
   function load() {
-    try { return JSON.parse(sessionStorage.getItem(STORE_KEY)) || []; }
+    try { return JSON.parse(store.getItem(STORE_KEY)) || []; }
     catch (e) { return []; }
   }
   function persist() {
-    try { sessionStorage.setItem(STORE_KEY, JSON.stringify(history.slice(-MAX_KEEP))); }
+    try { store.setItem(STORE_KEY, JSON.stringify(history.slice(-MAX_KEEP))); }
     catch (e) { /* storage full / disabled — ignore */ }
   }
 
@@ -110,22 +126,38 @@
   }
 
   // --- Live human replies (admin -> widget) --------------------------------
+  function setUnread(flag) {
+    root.classList.toggle("has-unread", !!flag);
+  }
+  async function fetchReplies() {
+    var r = await fetch("/api/chat/replies?thread=" + encodeURIComponent(THREAD_ID) +
+                        "&after=" + replyCursor, { headers: { "Accept": "application/json" } });
+    if (!r.ok) return [];
+    var data = await r.json();
+    return (data && data.replies) || [];
+  }
+  // Deliver queued replies into the open conversation (advances the cursor).
   async function poll() {
     if (document.visibilityState !== "visible") return;
     try {
-      var r = await fetch("/api/chat/replies?thread=" + encodeURIComponent(THREAD_ID) +
-                          "&after=" + replyCursor, { headers: { "Accept": "application/json" } });
-      if (!r.ok) return;
-      var data = await r.json();
-      var list = (data && data.replies) || [];
+      var list = await fetchReplies();
       for (var i = 0; i < list.length; i++) {
         if (!started) { render(); started = true; }
         bubble(list[i].text, "bot");
         history.push({ role: "assistant", content: list[i].text });
         if (list[i].id > replyCursor) replyCursor = list[i].id;
       }
-      if (list.length) { persist(); saveCursor(); }
+      if (list.length) { persist(); saveCursor(); setUnread(false); }
     } catch (e) { /* network hiccup — try again next tick */ }
+  }
+  // Lightweight check while the panel is closed: just flag that a reply is
+  // waiting (does NOT advance the cursor; delivery happens on open).
+  async function checkUnread() {
+    if (!panel.hidden || document.visibilityState !== "visible") return;
+    try {
+      var list = await fetchReplies();
+      if (list.length) setUnread(true);
+    } catch (e) { /* ignore */ }
   }
   function startPolling() {
     if (pollTimer) return;
@@ -139,6 +171,7 @@
   function open() {
     if (!started) { render(); started = true; }
     root.classList.add("is-open");
+    setUnread(false);
     panel.hidden = false;
     startPolling();
     setTimeout(function () { input.focus(); body.scrollTop = body.scrollHeight; }, 50);
@@ -189,4 +222,11 @@
     input.value = "";
     send(text);
   });
+
+  // Surface replies queued while the guest was away: flag the launcher on load
+  // and whenever the tab regains focus (only matters while the panel is closed).
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && panel.hidden) checkUnread();
+  });
+  checkUnread();
 })();
