@@ -23,9 +23,37 @@
   var STORE_KEY = "cgChatHistory:" + LANG;
   var MAX_KEEP = 30;        // turns kept in storage
   var MAX_SEND = 16;        // prior turns sent to the server
+  var POLL_MS = 6000;       // how often we check for human replies
+
+  // One conversation thread per browser (shared across languages) so a human
+  // reply from the admin reaches this widget regardless of the current page lang.
+  var THREAD_ID = thread();
+  var REPLY_CURSOR_KEY = "cgChatReplyCursor";
+  var replyCursor = loadCursor();
+  var pollTimer = null;
 
   var history = load();
   var started = false;
+
+  function thread() {
+    try {
+      var t = sessionStorage.getItem("cgChatThread");
+      if (!t) {
+        t = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : "t-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+        sessionStorage.setItem("cgChatThread", t);
+      }
+      return t;
+    } catch (e) { return "t-" + Date.now(); }
+  }
+  function loadCursor() {
+    try { return parseInt(sessionStorage.getItem(REPLY_CURSOR_KEY), 10) || 0; }
+    catch (e) { return 0; }
+  }
+  function saveCursor() {
+    try { sessionStorage.setItem(REPLY_CURSOR_KEY, String(replyCursor)); }
+    catch (e) { /* ignore */ }
+  }
 
   function load() {
     try { return JSON.parse(sessionStorage.getItem(STORE_KEY)) || []; }
@@ -81,15 +109,44 @@
     });
   }
 
+  // --- Live human replies (admin -> widget) --------------------------------
+  async function poll() {
+    if (document.visibilityState !== "visible") return;
+    try {
+      var r = await fetch("/api/chat/replies?thread=" + encodeURIComponent(THREAD_ID) +
+                          "&after=" + replyCursor, { headers: { "Accept": "application/json" } });
+      if (!r.ok) return;
+      var data = await r.json();
+      var list = (data && data.replies) || [];
+      for (var i = 0; i < list.length; i++) {
+        if (!started) { render(); started = true; }
+        bubble(list[i].text, "bot");
+        history.push({ role: "assistant", content: list[i].text });
+        if (list[i].id > replyCursor) replyCursor = list[i].id;
+      }
+      if (list.length) { persist(); saveCursor(); }
+    } catch (e) { /* network hiccup — try again next tick */ }
+  }
+  function startPolling() {
+    if (pollTimer) return;
+    poll();
+    pollTimer = setInterval(poll, POLL_MS);
+  }
+  function stopPolling() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  }
+
   function open() {
     if (!started) { render(); started = true; }
     root.classList.add("is-open");
     panel.hidden = false;
+    startPolling();
     setTimeout(function () { input.focus(); body.scrollTop = body.scrollHeight; }, 50);
   }
   function close() {
     root.classList.remove("is-open");
     panel.hidden = true;
+    stopPolling();
   }
 
   async function send(text) {
@@ -103,7 +160,7 @@
       var r = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: prior, lang: LANG })
+        body: JSON.stringify({ message: text, history: prior, lang: LANG, thread_id: THREAD_ID })
       });
       var data = await r.json();
       tip.remove();

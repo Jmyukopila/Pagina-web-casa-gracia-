@@ -11,7 +11,7 @@ always rejected. /api/ is disallowed in robots.txt.
 """
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, Form, Header, HTTPException, Query, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -45,7 +45,7 @@ async def api_escalations(pending: bool = Query(default=False),
             {
                 "id": e.id, "motivo": e.motivo, "mensaje": e.mensaje,
                 "idioma": e.idioma, "contacto": e.contacto, "contexto": e.contexto,
-                "atendido": e.atendido,
+                "thread_id": e.thread_id, "atendido": e.atendido,
                 "creado_en": e.creado_en.isoformat() if e.creado_en else None,
             }
             for e in rows
@@ -90,6 +90,19 @@ async def dashboard(request: Request, token: str = Query(default=""),
 async def attend_escalation(esc_id: int,
                             db: AsyncSession = Depends(get_session)):
     await crud.mark_escalation_attended(db, esc_id)
+    return RedirectResponse("/admin", status_code=303)
+
+
+@ui_router.post("/escalaciones/{esc_id}/responder",
+                dependencies=[Depends(_require_ui)])
+async def reply_escalation(esc_id: int, texto: str = Form(default=""),
+                           db: AsyncSession = Depends(get_session)):
+    """Send a live reply into the guest's chat widget (delivered while their tab
+    is open). The escalation carries the browser `thread_id`."""
+    esc = await crud.get_escalation(db, esc_id)
+    texto = (texto or "").strip()
+    if esc and esc.thread_id and texto:
+        await crud.create_chat_reply(db, esc.thread_id, texto)
     return RedirectResponse("/admin", status_code=303)
 
 

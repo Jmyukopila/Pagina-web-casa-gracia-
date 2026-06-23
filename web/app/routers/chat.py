@@ -11,6 +11,7 @@ import logging
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from .. import crud
 from ..chat import engine
 from ..chat.prefilter import detect_lang, quick_answer
 from ..config import settings
@@ -60,8 +61,32 @@ async def chat(request: Request, payload: ChatRequest,
         return {"reply": _fallback(text, lang), "source": "disabled"}
     try:
         history = [t.model_dump() for t in payload.history]
-        reply = await engine.generate_reply(db, history, text, lang=lang)
+        reply = await engine.generate_reply(db, history, text, lang=lang,
+                                             thread_id=payload.thread_id)
     except Exception:
         log.exception("Chat generation failed")
         reply = _fallback(text, lang)
     return {"reply": reply, "source": "ai"}
+
+
+@router.get("/chat/replies")
+async def chat_replies(request: Request,
+                       thread: str = "",
+                       after: int = 0,
+                       db: AsyncSession = Depends(get_session)):
+    """Live human replies for a chat thread (polled by the widget).
+
+    Auth is the unguessable `thread` UUID itself; only that thread's replies are
+    returned. Fails soft (empty list) so the widget never breaks."""
+    await rate_limit(request, max_per_minute=40)
+    thread = (thread or "").strip()[:40]
+    if not thread:
+        return {"replies": [], "cursor": after}
+    try:
+        rows = await crud.list_chat_replies(db, thread, after_id=max(after, 0))
+    except Exception:
+        log.exception("Chat replies poll failed")
+        return {"replies": [], "cursor": after}
+    cursor = rows[-1].id if rows else after
+    return {"replies": [{"id": r.id, "text": r.texto} for r in rows],
+            "cursor": cursor}

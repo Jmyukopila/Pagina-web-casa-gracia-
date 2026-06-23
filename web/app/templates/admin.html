@@ -66,6 +66,24 @@
           <pre style="white-space:pre-wrap;font-size:.82rem;margin:.5rem 0 0">{{ e.contexto }}</pre>
         </details>
         {% endif %}
+        {% if e.thread_id %}
+        <form method="post" action="/admin/escalaciones/{{ e.id }}/responder"
+              style="margin-top:10px;display:flex;gap:8px;align-items:flex-end">
+          <textarea name="texto" rows="2" required
+                    placeholder="Responder en el chat del huésped…"
+                    style="flex:1;min-width:0;font-family:inherit;font-size:.9rem;
+                           padding:.5rem .7rem;border:1px solid var(--line);border-radius:10px"></textarea>
+          <button class="btn btn--sm" type="submit">Responder en el chat</button>
+        </form>
+        <p class="muted" style="font-size:.78rem;margin:.35rem 0 0">
+          Se mostrará en el chat del huésped si tiene la pestaña abierta.
+        </p>
+        {% else %}
+        <p class="muted" style="font-size:.78rem;margin:10px 0 0">
+          Sin chat en vivo para responder
+          {% if e.contacto %}— contacta por <strong>{{ e.contacto }}</strong>{% endif %}.
+        </p>
+        {% endif %}
         <div style="margin-top:10px">
           {% if e.atendido %}
             <span class="badge b-conf">Atendido</span>
