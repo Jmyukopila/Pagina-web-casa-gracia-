@@ -18,6 +18,10 @@
   box-shadow:0 16px 34px rgba(184,136,80,.5),0 3px 8px rgba(46,42,38,.2)}
 .cg-chat__launch:active{transform:scale(1.02)}
 .cg-chat.is-open .cg-chat__launch{display:none}
+/* Unread dot: a human reply is waiting (queued while the guest was away). */
+.cg-chat__badge{position:absolute;top:0;right:0;width:14px;height:14px;border-radius:50%;
+  background:#e5484d;border:2px solid #fff;box-shadow:0 1px 3px rgba(46,42,38,.3);display:none}
+.cg-chat.has-unread .cg-chat__badge{display:block}
 @keyframes cgLaunchIn{from{opacity:0;transform:scale(.6) translateY(10px)}to{opacity:1;transform:none}}
 @keyframes cgPulse{0%{box-shadow:0 0 0 0 rgba(184,136,80,.4)}
   70%{box-shadow:0 0 0 14px rgba(184,136,80,0)}100%{box-shadow:0 0 0 0 rgba(184,136,80,0)}}
