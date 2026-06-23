@@ -29,6 +29,7 @@ EN: dict[str, str] = {
     "Ver habitaciones": "View rooms",
 
     # booking bar
+    "Reserva directa · al mejor precio": "Direct booking · best rate",
     "Habitación": "Room",
     "Cualquiera": "Any",
     "Entrada": "Check-in",
@@ -48,6 +49,8 @@ EN: dict[str, str] = {
     # features
     "Lo que te espera": "What awaits you",
     "Pensado para tu descanso": "Designed for your rest",
+    "Pequeños lujos pensados para que tu estadía sea fácil y memorable.":
+        "Small comforts to make your stay easy and memorable.",
     "Piscina": "Pool",
     "Piscina al aire libre y plunge pool todo el año.": "Outdoor pool and plunge pool year-round.",
     "WiFi gratis": "Free WiFi",
