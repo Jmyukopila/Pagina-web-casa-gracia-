@@ -25,9 +25,10 @@
 /* ---- Panel ---- */
 .cg-chat__panel{position:fixed;right:22px;bottom:22px;z-index:61;
   width:374px;max-width:calc(100vw - 32px);
-  /* Grow with the conversation (no big empty area when there are few messages)
-     up to a cap; the body scrolls past that. */
-  height:auto;min-height:220px;max-height:min(560px,72vh);
+  /* Reset: the panel is a <section>, and the site's global `section{padding:88px 0}`
+     would otherwise add huge empty space above the header and below the input. */
+  margin:0;padding:0;
+  height:min(566px,72vh);
   display:flex;flex-direction:column;overflow:hidden;
   background:var(--sand);border:1px solid var(--line);border-radius:20px;
   box-shadow:0 24px 60px rgba(46,42,38,.26),0 6px 18px rgba(46,42,38,.12);
@@ -36,7 +37,7 @@
 @keyframes cgPop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
 
 /* ---- Header ---- */
-.cg-chat__head{display:flex;align-items:center;gap:11px;padding:12px 14px;
+.cg-chat__head{display:flex;align-items:center;gap:11px;padding:14px 15px;
   background:linear-gradient(135deg,var(--caramel),var(--caramel-d));color:#fff;
   box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 2px 10px rgba(46,42,38,.12)}
 .cg-chat__avatar{width:38px;height:38px;border-radius:50%;flex:none;
@@ -54,21 +55,21 @@
 .cg-chat__close:hover{opacity:1;background:rgba(255,255,255,.18)}
 
 /* ---- Messages ---- */
-.cg-chat__body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px;display:flex;
-  flex-direction:column;gap:8px;background:var(--cream);
+.cg-chat__body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:18px 16px;display:flex;
+  flex-direction:column;gap:10px;background:var(--cream);
   scrollbar-width:thin;scrollbar-color:rgba(184,136,80,.35) transparent}
 .cg-chat__body::-webkit-scrollbar{width:7px}
 .cg-chat__body::-webkit-scrollbar-thumb{background:rgba(184,136,80,.32);border-radius:99px}
 .cg-chat__body::-webkit-scrollbar-thumb:hover{background:rgba(184,136,80,.5)}
 .cg-chat__body::-webkit-scrollbar-track{background:transparent}
-.cg-chat__msg{position:relative;max-width:86%;padding:9px 13px;border-radius:15px;
-  font-size:.92rem;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;
-  box-shadow:0 1px 2px rgba(46,42,38,.06)}
+.cg-chat__msg{position:relative;max-width:84%;padding:10px 14px;border-radius:16px;
+  font-size:.92rem;line-height:1.45;white-space:pre-wrap;word-wrap:break-word;
+  box-shadow:0 1px 2px rgba(46,42,38,.07)}
 .cg-chat__msg--in{animation:cgMsgIn .28s ease both}
 @keyframes cgMsgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .cg-chat__msg a{color:var(--caramel-d);text-decoration:underline;word-break:break-all}
 .cg-chat__msg--bot{align-self:flex-start;background:#fff;color:var(--ink);
-  border-bottom-left-radius:5px}
+  border:1px solid var(--line);border-bottom-left-radius:5px}
 .cg-chat__msg--user{align-self:flex-end;color:#fff;border-bottom-right-radius:5px;
   background:linear-gradient(135deg,var(--caramel),var(--caramel-d));
   box-shadow:0 2px 8px rgba(184,136,80,.28)}
