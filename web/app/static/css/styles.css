@@ -355,6 +355,37 @@ section{padding:88px 0}
 .sticky-cta__btn{background:var(--caramel);color:#fff;border-radius:999px;flex:none;
   padding:.7rem 1.35rem;font-weight:500;white-space:nowrap}
 
+/* Rooms page intro lead */
+.page-head__lead{max-width:640px;margin:.9rem auto 0;color:var(--muted)}
+
+/* ---- Rooms showcase: unique alternating editorial layout ---- */
+.rooms-show{display:flex;flex-direction:column;gap:64px}
+.room-show{display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center}
+.room-show:nth-child(even) .room-show__media{order:2}
+.room-show__media{position:relative;display:block;border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-lg);aspect-ratio:4/3}
+.room-show__media img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.room-show__media:hover img{transform:scale(1.05)}
+.room-show__type{position:absolute;top:16px;left:16px;z-index:1;color:#fff;
+  background:rgba(46,42,38,.55);backdrop-filter:blur(4px);
+  font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.35rem .85rem;border-radius:999px}
+.room-show__body{position:relative}
+.room-show__num{font-family:'Cormorant Garamond';font-size:3.4rem;font-weight:600;
+  color:var(--caramel-l);line-height:.8;display:block;margin-bottom:.2rem}
+.room-show__body h2{margin:0 0 .2rem}
+.room-show__body h2 a:hover{color:var(--caramel-d)}
+.room-show__specs{display:flex;flex-wrap:wrap;gap:10px 18px;margin:.7rem 0;color:var(--muted);font-size:.9rem}
+.room-show__specs span{display:inline-flex;align-items:center;gap:.4rem}
+.room-show__specs .icon{color:var(--caramel)}
+.room-show__desc{color:var(--muted);margin:.4rem 0 0}
+.room-show__amen{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:1rem 0 0;padding:0}
+.room-show__amen li{background:var(--cream);color:var(--caramel-d);font-size:.78rem;
+  padding:.32rem .8rem;border-radius:999px}
+.room-show__foot{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;margin-top:1.4rem;padding-top:1.3rem;border-top:1px solid var(--line)}
+.room-show__foot .price{font-size:1.9rem}
+
 /* ---- Responsive ----
    NOTE: desktop layout (>900px) is intentionally left untouched. All of the
    rules below only kick in on tablets/phones to improve touch ergonomics. */
@@ -369,6 +400,10 @@ section{padding:88px 0}
   .split--reverse>*{order:0}
   .media-frame::before{display:none}
   .benefits-grid{grid-template-columns:1fr 1fr}
+  /* rooms showcase: stack image over details */
+  .rooms-show{gap:44px}
+  .room-show{grid-template-columns:1fr;gap:22px}
+  .room-show:nth-child(even) .room-show__media{order:0}
 }
 @media(max-width:640px){
   section{padding:60px 0}

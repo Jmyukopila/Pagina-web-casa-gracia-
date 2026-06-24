@@ -102,7 +102,7 @@
   // Scroll-reveal: fade/rise elements as they enter the viewport, staggered
   // within each grid/row. Final state matches the static layout exactly.
   const revealEls = document.querySelectorAll(
-    ".feature, .benefit, .room-card, .review, .split > div, " +
+    ".feature, .benefit, .room-card, .room-show, .review, .split > div, " +
     "section > .container > .center, .gallery, .bookbar, .detail-grid > div");
   if (revealEls.length) {
     if (reduceMotion || !hasIO) {
