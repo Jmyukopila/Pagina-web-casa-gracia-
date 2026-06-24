@@ -5,13 +5,14 @@
   <div class="container">
     <div class="eyebrow">{{ t("Alojamiento") }}</div>
     <h1 style="color:var(--ink)">{{ t("Nuestras habitaciones") }}</h1>
+    <p class="page-head__lead">{{ t("Ocho habitaciones renovadas, cada una con su carácter. Elige la tuya y reserva al mejor precio, directo con nosotros.") }}</p>
     <div class="breadcrumb"><a href="/">{{ t("Inicio") }}</a> · {{ t("Habitaciones") }}</div>
   </div>
 </div>
 <section>
   <div class="container">
-    <div class="rooms-grid" style="margin-top:0">
-      {% for room in rooms %}{% include "_room_card.html" %}{% endfor %}
+    <div class="rooms-show">
+      {% for room in rooms %}{% set idx = loop.index %}{% include "_room_showcase.html" %}{% endfor %}
     </div>
   </div>
 </section>

@@ -63,6 +63,8 @@ EN: dict[str, str] = {
     # rooms section
     "Alojamiento": "Accommodation",
     "Nuestras habitaciones": "Our rooms",
+    "Ocho habitaciones renovadas, cada una con su carácter. Elige la tuya y reserva al mejor precio, directo con nosotros.":
+        "Eight renovated rooms, each with its own character. Choose yours and book at the best price, direct with us.",
     "Ver todas las habitaciones": "View all rooms",
 
     # reviews section

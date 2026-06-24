@@ -1,0 +1,32 @@
+{% from "_icons.html" import icon %}
+{% from "_media.html" import picture %}
+{# Editorial alternating room showcase. Used in rooms.html inside a {% for %}
+   loop, so `loop` and `room` are in scope. Booking still happens on the detail
+   page; this card just showcases the room and links there. #}
+<article class="room-show">
+  <a class="room-show__media" href="/habitaciones/{{ room.slug }}" aria-label="{{ room_name(room) }}">
+    {{ picture(room.images[0] if room.images else '/static/img/rooms/613585235_ae5ac2cd.jpg',
+               alt=room_name(room)) }}
+    <span class="room-show__type">{{ room.room_type }}</span>
+  </a>
+  <div class="room-show__body">
+    <span class="room-show__num">{{ '%02d'|format(idx) }}</span>
+    <h2><a href="/habitaciones/{{ room.slug }}">{{ room_name(room) }}</a></h2>
+    <div class="room-show__specs">
+      <span>{{ icon('user', 17) }} {{ t("Hasta {n} huéspedes").format(n=room.max_occupancy) }}</span>
+      <span>{{ icon('bed', 17) }} {{ t(room.bed) }}</span>
+      {% if room.size_m2 %}<span>{{ icon('area', 17) }} {{ room.size_m2 }} m²</span>{% endif %}
+      {% if room.view %}<span>{{ icon('view', 17) }} {{ t(room.view) }}</span>{% endif %}
+    </div>
+    <p class="room-show__desc">{{ room_desc(room) | truncate(165) }}</p>
+    {% if room.amenities %}
+    <ul class="room-show__amen">
+      {% for a in room.amenities[:4] %}<li>{{ t(a) }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    <div class="room-show__foot">
+      <div class="price"><small class="price__from">{{ t("desde") }}</small>{{ money(room.price_cop) }}<small>{{ t("por noche · mejor precio directo") }}</small></div>
+      <a class="btn" href="/habitaciones/{{ room.slug }}">{{ t("Ver y reservar") }}</a>
+    </div>
+  </div>
+</article>
