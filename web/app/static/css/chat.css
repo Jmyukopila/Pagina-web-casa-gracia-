@@ -101,6 +101,10 @@
 .cg-chat__send:active{transform:none}
 .cg-chat__send:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
 
+/* Lift the launcher above the sticky booking CTA when it's showing (phones). */
+@media(max-width:640px){
+  body.sticky-on .cg-chat__launch{bottom:84px}
+}
 /* ---- Mobile: near full-screen sheet ---- */
 @media(max-width:480px){
   .cg-chat__launch{right:16px;bottom:16px;width:54px;height:54px}

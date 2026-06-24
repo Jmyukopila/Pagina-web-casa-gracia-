@@ -69,6 +69,16 @@
   {% block head %}{% endblock %}
 </head>
 <body>
+{% from "_icons.html" import icon %}
+<div class="ribbon">
+  <div class="container ribbon__inner">
+    <span>{{ t("Reserva directa oficial") }}</span>
+    <span class="ribbon__dot">·</span>
+    <span>{{ t("Mejor precio sin comisiones") }}</span>
+    <span class="ribbon__dot">·</span>
+    <span>{{ t("Te confirmamos el mismo día") }}</span>
+  </div>
+</div>
 <header class="nav" id="nav">
   <div class="container nav__inner">
     <a class="nav__brand" href="/" aria-label="{{ hotel.name }}">
@@ -81,6 +91,7 @@
       <a href="/habitaciones">{{ t("Habitaciones") }}</a>
       <a href="/opiniones">{{ t("Opiniones") }}</a>
       <a href="/contacto">{{ t("Contacto") }}</a>
+      <span class="nav__hint">{{ t("Mejor precio directo") }}</span>
       <a class="btn btn--sm" href="/reservar">{{ t("Reservar") }}</a>
       <span class="lang-switch">
         <a href="?lang=es" class="{{ 'is-active' if lang == 'es' else '' }}">ES</a>
@@ -95,6 +106,11 @@
 </main>
 
 <footer class="footer">
+  <div class="container footer__trust">
+    <span>{{ icon('shield', 18) }} {{ t("Reserva directa segura") }}</span>
+    <span>{{ icon('tag', 18) }} {{ t("Mejor precio garantizado directo") }}</span>
+    <span>{{ icon('clock', 18) }} {{ t("Recepción 24 horas") }}</span>
+  </div>
   <div class="container footer__grid">
     <div>
       <img src="/static/img/brand/icon-white.svg" alt="" height="56" class="footer__icon">
@@ -125,6 +141,11 @@
     <span class="muted">{{ t("Hecho con cariño · Reserva directa") }}</span>
   </div>
 </footer>
+
+<a class="sticky-cta" id="stickyCta" href="/reservar" aria-label="{{ t('Reservar') }}">
+  <span class="sticky-cta__text">{{ icon('tag', 16) }} {{ t("Mejor precio directo") }}</span>
+  <span class="sticky-cta__btn">{{ t("Reservar") }}</span>
+</a>
 
 {% include "_chat_widget.html" %}
 

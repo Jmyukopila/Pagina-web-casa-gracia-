@@ -84,10 +84,25 @@
     onScroll();
   }
 
+  // Sticky mobile booking CTA: reveal once the hero scrolls out of view.
+  // Only active where a hero exists (the homepage); inner pages keep it hidden.
+  const sticky = document.getElementById("stickyCta");
+  const heroEl = document.querySelector(".hero");
+  if (sticky && heroEl && hasIO) {
+    const setSticky = (show) => {
+      sticky.classList.toggle("is-visible", show);
+      document.body.classList.toggle("sticky-on", show);
+    };
+    const sio = new IntersectionObserver(
+      (entries) => entries.forEach((e) => setSticky(!e.isIntersecting)),
+      { threshold: 0 });
+    sio.observe(heroEl);
+  }
+
   // Scroll-reveal: fade/rise elements as they enter the viewport, staggered
   // within each grid/row. Final state matches the static layout exactly.
   const revealEls = document.querySelectorAll(
-    ".feature, .room-card, .review, .split > div, " +
+    ".feature, .benefit, .room-card, .review, .split > div, " +
     "section > .container > .center, .gallery, .bookbar, .detail-grid > div");
   if (revealEls.length) {
     if (reduceMotion || !hasIO) {

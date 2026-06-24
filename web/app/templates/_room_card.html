@@ -14,8 +14,8 @@
       {% if room.size_m2 %}<span>{{ icon('area', 16) }} {{ room.size_m2 }} m²</span>{% endif %}
     </div>
     <div class="room-card__foot">
-      <div class="price">{{ money(room.price_cop) }}<small>{{ t("por noche") }}</small></div>
-      <a class="btn btn--sm" href="/habitaciones/{{ room.slug }}">{{ t("Ver") }}</a>
+      <div class="price"><small class="price__from">{{ t("desde") }}</small>{{ money(room.price_cop) }}<small>{{ t("por noche · mejor precio directo") }}</small></div>
+      <a class="btn btn--sm" href="/habitaciones/{{ room.slug }}">{{ t("Ver y reservar") }}</a>
     </div>
   </div>
 </article>

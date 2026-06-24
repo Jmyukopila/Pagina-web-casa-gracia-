@@ -79,10 +79,56 @@ EN: dict[str, str] = {
     "~10 min al aeropuerto": "~10 min to the airport",
     "Reservar mi estadía": "Book my stay",
 
+    # marketing / conversion (home)
+    "Tu refugio en el corazón de Cartagena": "Your retreat in the heart of Cartagena",
+    "Hotel boutique con piscina y trato cercano, a pasos del Castillo de San Felipe. Reserva directo y paga el mejor precio.":
+        "A boutique hotel with a pool and warm, personal service, steps from San Felipe Castle. Book direct and pay the best price.",
+    "Reservar directo": "Book direct",
+    "Mejor precio directo": "Best direct rate",
+    "A pasos del Castillo de San Felipe": "Steps from San Felipe Castle",
+    "Consulta disponibilidad y reserva al mejor precio": "Check availability and book at the best price",
+    "Ver disponibilidad": "Check availability",
+    "Confirmación el mismo día · Sin tarjeta hasta confirmar · Pago seguro":
+        "Same-day confirmation · No card until confirmed · Secure booking",
+    "Por qué reservar directo": "Why book direct",
+    "Reserva en el sitio oficial y gana": "Book on the official site and win",
+    "Mejor precio, siempre": "The best price, always",
+    "Sin comisiones de intermediarios: la tarifa más baja la encuentras aquí.":
+        "No middleman fees: the lowest rate is right here.",
+    "Trato directo": "Direct service",
+    "Hablas con el hotel, no con una central. Atención cercana y personalizada.":
+        "You talk to the hotel, not a call center. Close, personal attention.",
+    "Flexibilidad": "Flexibility",
+    "Gestionamos tu reserva y tus peticiones especiales sin intermediarios.":
+        "We handle your booking and special requests with no middlemen.",
+    "Pago seguro": "Secure payment",
+    "Sin tarjeta hasta confirmar y sin cargos ocultos.": "No card until confirmed, and no hidden fees.",
+    "Habitaciones pensadas para descansar": "Rooms designed for rest",
+    "Espacios renovados, camas confortables y los pequeños detalles que hacen memorable tu estadía.":
+        "Renovated spaces, comfortable beds and the little touches that make your stay memorable.",
+    "Huéspedes que nos recomiendan": "Guests who recommend us",
+    "Reserva directa": "Direct booking",
+    "Tu estadía en Cartagena empieza aquí": "Your Cartagena stay starts here",
+    "Asegura tu habitación al mejor precio, directo con nosotros.":
+        "Secure your room at the best price, direct with us.",
+    "Mejor precio · Sin comisiones · Pago seguro": "Best price · No commissions · Secure booking",
+    "Recién renovado en el tranquilo barrio de Manga, combinamos el encanto de una casa cartagenera con el confort de habitaciones modernas. Despierta con el sol, refréscate en la piscina y deja que el ritmo del Caribe marque tu día.":
+        "Newly renovated in the quiet Manga neighborhood, we blend the charm of a Cartagena home with the comfort of modern rooms. Wake with the sun, cool off in the pool and let the Caribbean set the pace of your day.",
+    # ribbon + footer trust
+    "Reserva directa oficial": "Official direct booking",
+    "Mejor precio sin comisiones": "Best price, no commissions",
+    "Te confirmamos el mismo día": "Confirmed the same day",
+    "Reserva directa segura": "Secure direct booking",
+    "Mejor precio garantizado directo": "Best price guaranteed, direct",
+    "Recepción 24 horas": "24-hour reception",
+
     # room card / detail
     "huésp.": "guests",
     "Ver": "View",
+    "Ver y reservar": "View & book",
+    "desde": "from",
     "por noche": "per night",
+    "por noche · mejor precio directo": "per night · best direct rate",
     "Sobre esta habitación": "About this room",
     "Hasta {n} huéspedes": "Up to {n} guests",
     "Comodidades": "Amenities",
