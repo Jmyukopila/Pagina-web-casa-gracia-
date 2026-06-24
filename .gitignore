@@ -42,3 +42,10 @@ Thumbs.db
 _m_*.png
 _shot.py
 _ashot.py
+
+# ───────────────── AI assistant scaffolding (local only) ─────────────────
+CLAUDE.md
+AGENTS.md
+plan.md
+PLAN.md
+.claude/
