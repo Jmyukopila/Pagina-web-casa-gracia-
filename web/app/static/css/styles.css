@@ -284,6 +284,77 @@ section{padding:88px 0}
 .split--reverse>:first-child{order:2}
 .split--reverse>:last-child{order:1}
 
+/* ============================================================
+   Conversion / hotel-marketing components (neuromarketing + trust).
+   ============================================================ */
+/* Top value ribbon */
+.ribbon{background:var(--ink);color:#efe7da}
+.ribbon__inner{display:flex;align-items:center;justify-content:center;gap:10px;
+  flex-wrap:wrap;min-height:36px;font-size:.78rem;letter-spacing:.04em}
+.ribbon__dot{opacity:.4}
+
+/* Nav value hint (desktop) */
+.nav__hint{font-size:.74rem;letter-spacing:.03em;color:var(--caramel-d);font-weight:500;
+  display:inline-flex;align-items:center}
+
+/* Hero CTA row + trust strip */
+.hero__cta{display:flex;gap:14px;flex-wrap:wrap}
+.hero__trust{list-style:none;margin:22px 0 0;padding:0;display:flex;gap:8px 22px;
+  flex-wrap:wrap;color:#f1e9dd}
+.hero__trust li{display:inline-flex;align-items:center;gap:.4rem;font-size:.86rem}
+.hero__trust .icon{color:var(--caramel-l)}
+.hero__trust strong{font-weight:600}
+
+/* Booking bar reassurance microcopy */
+.bookbar__note{grid-column:1/-1;margin:4px 0 0;display:flex;align-items:center;gap:.4rem;
+  font-size:.8rem;color:var(--muted)}
+.bookbar__note .icon{color:var(--caramel);flex:none}
+
+/* Centered section header variant */
+.section-head--center{margin-left:auto;margin-right:auto;text-align:center}
+.section-head--center::after{margin-left:auto;margin-right:auto}
+
+/* Direct-booking benefits */
+.benefits-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:44px}
+.benefit{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:28px 24px;transition:.2s}
+.benefit:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+.benefit__ic{width:52px;height:52px;border-radius:50%;background:var(--cream);
+  color:var(--caramel-d);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.benefit h3{font-size:1.18rem;margin:0 0 .35rem}
+.benefit p{font-size:.92rem;color:var(--muted);margin:0}
+
+/* Room price "from" label */
+.price__from{font-family:'Jost';font-size:.7rem;color:var(--muted);display:block;
+  text-transform:uppercase;letter-spacing:.1em;line-height:1;margin-bottom:1px}
+
+/* Closing CTA band */
+.cta-final{background:linear-gradient(135deg,var(--caramel),var(--caramel-d));color:#fff}
+.cta-final .eyebrow{color:rgba(255,255,255,.85)}
+.cta-final h2{color:#fff}
+.cta-final p{max-width:540px;margin:0 auto;font-size:1.1rem;opacity:.95}
+.cta-final .btn--light{margin-top:1.6rem}
+.cta-final__note{margin-top:1rem;font-size:.82rem;opacity:.92;letter-spacing:.03em}
+
+/* Footer trust line */
+.footer__trust{display:flex;flex-wrap:wrap;gap:14px 32px;justify-content:center;
+  padding-bottom:30px;margin-bottom:30px;border-bottom:1px solid #463f38}
+.footer__trust span{display:inline-flex;align-items:center;gap:.5rem;font-size:.86rem;color:#e7ddce}
+.footer__trust .icon{color:var(--caramel-l)}
+
+/* Sticky mobile booking CTA (shown on phones, after scrolling past the hero) */
+.sticky-cta{position:fixed;left:12px;right:12px;bottom:12px;z-index:55;
+  display:none;align-items:center;justify-content:space-between;gap:12px;
+  background:#fff;border:1px solid var(--line);border-radius:999px;
+  padding:7px 7px 7px 20px;box-shadow:var(--shadow-lg);
+  transform:translateY(140%);transition:transform .3s ease}
+.sticky-cta.is-visible{transform:none}
+.sticky-cta__text{display:inline-flex;align-items:center;gap:.4rem;font-size:.9rem;
+  font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden}
+.sticky-cta__text .icon{color:var(--caramel);flex:none}
+.sticky-cta__btn{background:var(--caramel);color:#fff;border-radius:999px;flex:none;
+  padding:.7rem 1.35rem;font-weight:500;white-space:nowrap}
+
 /* ---- Responsive ----
    NOTE: desktop layout (>900px) is intentionally left untouched. All of the
    rules below only kick in on tablets/phones to improve touch ergonomics. */
@@ -297,6 +368,7 @@ section{padding:88px 0}
   .feature-split{grid-template-columns:1fr;gap:28px}
   .split--reverse>*{order:0}
   .media-frame::before{display:none}
+  .benefits-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:640px){
   section{padding:60px 0}
@@ -327,7 +399,10 @@ section{padding:88px 0}
   .hero--editorial .hero__dots{bottom:76px;right:24px}
 
   /* Single-column content */
-  .rooms-grid,.reviews-grid,.feature-grid,.feature-list,.form-grid,.amenities{grid-template-columns:1fr}
+  .rooms-grid,.reviews-grid,.feature-grid,.feature-list,.form-grid,.amenities,.benefits-grid{grid-template-columns:1fr}
+  .nav__hint{display:none}
+  .ribbon__inner{font-size:.72rem;gap:7px}
+  .sticky-cta{display:flex}
   /* booking bar sits BELOW the hero on mobile (desktop keeps the floating overlap) */
   .bookbar{grid-template-columns:1fr;padding:16px;border-radius:var(--radius);margin:28px auto 0}
   .gallery{grid-template-columns:1fr 1fr;grid-auto-rows:130px}
