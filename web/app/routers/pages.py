@@ -30,22 +30,59 @@ async def home(request: Request, db: AsyncSession = Depends(get_session)):
 
 
 # --- Rooms -----------------------------------------------------------------
+def _parse_stay(checkin: str, checkout: str) -> tuple[date, date] | None:
+    """Parse a valid future stay (checkout after checkin, not in the past)."""
+    try:
+        ci = date.fromisoformat(checkin)
+        co = date.fromisoformat(checkout)
+    except (ValueError, TypeError):
+        return None
+    if ci < date.today() or co <= ci:
+        return None
+    return ci, co
+
+
 @router.get("/habitaciones")
-async def rooms_list(request: Request, db: AsyncSession = Depends(get_session)):
+async def rooms_list(request: Request, checkin: str = "", checkout: str = "",
+                     guests: int = 0, db: AsyncSession = Depends(get_session)):
     rooms = await crud.list_rooms(db)
-    return render(request, "rooms.html", rooms=rooms)
+    stay = _parse_stay(checkin, checkout)
+    searched = stay is not None
+    if searched:
+        ci, co = stay
+        available = []
+        for room in rooms:
+            if guests and room.max_occupancy < guests:
+                continue
+            if await crud.is_available(db, room.id, ci, co):
+                available.append(room)
+        rooms = available
+    return render(request, "rooms.html", rooms=rooms, searched=searched,
+                  checkin=(checkin if searched else ""),
+                  checkout=(checkout if searched else ""),
+                  guests=(guests if searched else 0))
 
 
 @router.get("/habitaciones/{slug}")
 async def room_detail(request: Request, slug: str,
+                     checkin: str = "", checkout: str = "", guests: int = 0,
                      db: AsyncSession = Depends(get_session)):
     room = await crud.get_room_by_slug(db, slug)
     if not room or not room.activa:
         raise HTTPException(404, "Habitación no encontrada.")
     today = date.today()
+    stay = _parse_stay(checkin, checkout)
+    if stay:
+        ci, co = stay
+        default_checkin, default_checkout = ci.isoformat(), co.isoformat()
+    else:
+        default_checkin = (today + timedelta(days=7)).isoformat()
+        default_checkout = (today + timedelta(days=9)).isoformat()
+    default_guests = guests if 1 <= guests <= room.max_occupancy else 0
     return render(request, "room_detail.html", room=room,
-                  default_checkin=(today + timedelta(days=7)).isoformat(),
-                  default_checkout=(today + timedelta(days=9)).isoformat())
+                  default_checkin=default_checkin,
+                  default_checkout=default_checkout,
+                  default_guests=default_guests)
 
 
 # --- Booking flow ----------------------------------------------------------
