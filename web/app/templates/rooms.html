@@ -11,9 +11,27 @@
 </div>
 <section>
   <div class="container">
+    {% if searched %}
+    <div class="results-bar">
+      <p class="results-bar__txt">
+        {% if rooms %}<strong>{{ rooms|length }}</strong> {{ t("disponibles para") }}{% else %}{{ t("Sin disponibilidad para") }}{% endif %}
+        {{ checkin }} → {{ checkout }}{% if guests %} · {{ guests }} {{ t("huésp.") }}{% endif %}
+      </p>
+      <a class="btn btn--ghost btn--sm" href="/habitaciones">{{ t("Cambiar fechas · ver todas") }}</a>
+    </div>
+    {% endif %}
+
+    {% if rooms %}
     <div class="rooms-show">
       {% for room in rooms %}{% set idx = loop.index %}{% include "_room_showcase.html" %}{% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state">
+      <h2>{{ t("No hay disponibilidad para esas fechas") }}</h2>
+      <p class="muted">{{ t("Prueba con otras fechas o escríbenos y te ayudamos a encontrar tu estadía.") }}</p>
+      <a class="btn" href="/habitaciones">{{ t("Ver todas las habitaciones") }}</a>
+    </div>
+    {% endif %}
   </div>
 </section>
 {% endblock %}

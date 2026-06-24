@@ -43,15 +43,8 @@
 
 <!-- Quick availability bar -->
 <div class="container" id="book">
-  <form class="bookbar bookbar--hero" action="/reservar" method="get">
+  <form class="bookbar bookbar--hero" action="/habitaciones" method="get">
     <div class="bookbar__title">{{ t("Consulta disponibilidad y reserva al mejor precio") }}</div>
-    <div class="field">
-      <label for="hb-room">{{ t("Habitación") }}</label>
-      <select id="hb-room" name="room">
-        <option value="">{{ t("Cualquiera") }}</option>
-        {% for r in all_rooms %}<option value="{{ r.slug }}">{{ room_name(r) }}</option>{% endfor %}
-      </select>
-    </div>
     <div class="field">
       <label for="hb-in">{{ t("Entrada") }}</label>
       <input id="hb-in" type="date" name="checkin">

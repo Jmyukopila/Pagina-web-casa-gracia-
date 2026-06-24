@@ -51,7 +51,7 @@
         <div class="field" style="margin-top:.6rem">
           <label for="g">{{ t("Huéspedes") }}</label>
           <select id="g">
-            {% for n in range(1, room.max_occupancy + 1) %}<option>{{ n }}</option>{% endfor %}
+            {% for n in range(1, room.max_occupancy + 1) %}<option{% if default_guests and n == default_guests %} selected{% endif %}>{{ n }}</option>{% endfor %}
           </select>
         </div>
 

@@ -66,6 +66,12 @@ EN: dict[str, str] = {
     "Ocho habitaciones renovadas, cada una con su carácter. Elige la tuya y reserva al mejor precio, directo con nosotros.":
         "Eight renovated rooms, each with its own character. Choose yours and book at the best price, direct with us.",
     "Ver todas las habitaciones": "View all rooms",
+    "disponibles para": "available for",
+    "Sin disponibilidad para": "No availability for",
+    "Cambiar fechas · ver todas": "Change dates · view all",
+    "No hay disponibilidad para esas fechas": "No availability for those dates",
+    "Prueba con otras fechas o escríbenos y te ayudamos a encontrar tu estadía.":
+        "Try other dates or message us and we'll help you find your stay.",
 
     # reviews section
     "Lo que dicen nuestros huéspedes": "What our guests say",
