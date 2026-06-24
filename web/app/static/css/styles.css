@@ -109,9 +109,10 @@ section{padding:88px 0}
 .hero__nav--next{right:24px}
 .hero:hover .hero__nav,
 .hero__nav:focus-visible{opacity:1;visibility:visible}
+.hero:hover .hero__dots{opacity:1;visibility:visible}
 .hero__nav:hover{background:rgba(184,136,80,.9)}
 .hero__nav:active{transform:translateY(-50%) scale(.94)}
-@media(hover:none){.hero__nav{opacity:.85;visibility:visible}}   /* touch: keep visible */
+@media(hover:none){.hero__nav{opacity:.85;visibility:visible}.hero__dots{opacity:.85;visibility:visible}}   /* touch: keep visible */
 @media(max-width:640px){
   .hero__nav{width:42px;height:42px}
   .hero__nav--prev{left:10px}.hero__nav--next{right:10px}
@@ -247,7 +248,7 @@ section{padding:88px 0}
 .hero--editorial .hero__content{margin:0;max-width:660px;padding:40px 0 92px}
 .hero--editorial .hero__content p{margin-left:0}
 .hero--editorial .hero__nav{top:auto;bottom:34px;transform:none;width:46px;height:46px;
-  opacity:1;visibility:visible;background:rgba(46,42,38,.42)}
+  background:rgba(46,42,38,.42)}
 .hero--editorial .hero__nav--prev{left:auto;right:86px}
 .hero--editorial .hero__nav--next{right:30px}
 .hero--editorial .hero__nav:active{transform:scale(.94)}
@@ -500,7 +501,8 @@ section{padding:88px 0}
 /* Hero: load fade-in, slide dots, and a scroll-down hint. */
 .hero__content{animation:fadeUp .9s ease both}
 .hero__dots{position:absolute;left:0;right:0;bottom:26px;z-index:3;
-  display:flex;gap:10px;justify-content:center}
+  display:flex;gap:10px;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s ease}
 .hero__dot{width:9px;height:9px;border-radius:999px;border:0;cursor:pointer;padding:0;
   background:rgba(255,255,255,.45);transition:background .25s ease,width .25s ease}
 .hero__dot:hover{background:rgba(255,255,255,.8)}
