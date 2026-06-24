@@ -29,10 +29,6 @@
       <div class="eyebrow">Manga · Cartagena de Indias</div>
       <h1>{{ t("Tu refugio en el corazón de Cartagena") }}</h1>
       <p>{{ t("Hotel boutique con piscina y trato cercano, a pasos del Castillo de San Felipe. Reserva directo y paga el mejor precio.") }}</p>
-      <div class="hero__cta">
-        <a class="btn" href="/reservar">{{ t("Reservar directo") }}</a>
-        <a class="btn btn--light" href="/habitaciones">{{ t("Ver habitaciones") }}</a>
-      </div>
       <ul class="hero__trust">
         {% if rating_count %}
         <li>{{ icon('star', 16) }} <strong>{{ rating_avg }}</strong> · {{ t("{n} opiniones").format(n=rating_count) }}</li>
@@ -185,17 +181,6 @@
     </div>
     <iframe class="map-embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
       src="https://maps.google.com/maps?q={{ hotel.lat }},{{ hotel.lng }}&z=15&output=embed"></iframe>
-  </div>
-</section>
-
-<!-- Closing CTA -->
-<section class="cta-final">
-  <div class="container center">
-    <div class="eyebrow">{{ t("Reserva directa") }}</div>
-    <h2>{{ t("Tu estadía en Cartagena empieza aquí") }}</h2>
-    <p>{{ t("Asegura tu habitación al mejor precio, directo con nosotros.") }}</p>
-    <a class="btn btn--light" href="/reservar">{{ t("Reservar ahora") }}</a>
-    <p class="cta-final__note">{{ t("Mejor precio · Sin comisiones · Pago seguro") }}</p>
   </div>
 </section>
 
