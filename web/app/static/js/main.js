@@ -160,9 +160,9 @@
   if (lb) {
     const lbImg = document.getElementById("lightboxImg");
     const lbClose = document.getElementById("lightboxClose");
-    // Zoomable photos: room detail gallery + room showcase covers.
-    const zoomables = document.querySelectorAll(
-      ".gallery img, .room-show__media img");
+    // Zoomable photos: only the room-detail gallery. The showcase covers stay
+    // plain links to the room page (no zoom hijack, no lupa cursor).
+    const zoomables = document.querySelectorAll(".gallery img");
 
     function openLb(src, alt) {
       lbImg.src = src;
