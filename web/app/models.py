@@ -156,6 +156,9 @@ class Escalacion(Base):
     idioma: Mapped[str] = mapped_column(String(2), default="es")
     contexto: Mapped[str | None] = mapped_column(Text, nullable=True)
     contacto: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    # Canal preferido por el huésped para que recepción le responda: "whatsapp"
+    # o "correo" (lo elige en el chat al escalar).
+    canal: Mapped[str | None] = mapped_column(String(20), nullable=True)
     # Browser conversation thread (a client UUID) so a human reply written from
     # the admin can be delivered back into that guest's live chat widget.
     thread_id: Mapped[str | None] = mapped_column(String(40), nullable=True, index=True)

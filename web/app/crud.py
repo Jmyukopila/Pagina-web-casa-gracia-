@@ -308,6 +308,7 @@ async def create_escalation(db: AsyncSession, *, motivo: str,
                             mensaje: str | None = None, idioma: str = "es",
                             contexto: str | None = None,
                             contacto: str | None = None,
+                            canal: str | None = None,
                             thread_id: str | None = None) -> Escalacion:
     esc = Escalacion(
         motivo=(motivo or "Sin especificar")[:2000],
@@ -315,6 +316,7 @@ async def create_escalation(db: AsyncSession, *, motivo: str,
         idioma=idioma if idioma in ("es", "en") else "es",
         contexto=contexto,
         contacto=contacto,
+        canal=(canal or None),
         thread_id=(thread_id or None),
     )
     db.add(esc)

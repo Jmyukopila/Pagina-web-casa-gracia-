@@ -1,6 +1,8 @@
 /* Casa Gracia — chat assistant widget.
-   Stateless server: we keep the conversation in the browser (sessionStorage)
-   and send the recent turns with each message. Icons only, no emoji. */
+   Stateless server: we keep the conversation in the browser ONLY for the
+   current page view and send the recent turns with each message. The history
+   resets every time the guest leaves and re-enters the page (in-memory store,
+   nothing persisted). Icons only, no emoji. */
 (function () {
   "use strict";
   var root = document.getElementById("cg-chat");
@@ -25,23 +27,16 @@
   var MAX_SEND = 16;        // prior turns sent to the server
   var POLL_MS = 6000;       // how often we check for human replies
 
-  // Persist ACROSS sessions (survives tab close / browser restart) so a human
-  // reply queued while the guest was away shows up next time they open the chat.
-  // Falls back to an in-memory store if localStorage is blocked (private mode).
+  // In-memory store ONLY: the conversation (history, thread id, reply cursor)
+  // lives just for this page view and is gone on reload / navigation, so the
+  // chat starts fresh every time the guest enters the page.
   var store = (function () {
     var mem = {};
-    try {
-      var k = "__cg_probe__";
-      window.localStorage.setItem(k, "1");
-      window.localStorage.removeItem(k);
-      return window.localStorage;
-    } catch (e) {
-      return {
-        getItem: function (key) { return key in mem ? mem[key] : null; },
-        setItem: function (key, val) { mem[key] = String(val); },
-        removeItem: function (key) { delete mem[key]; }
-      };
-    }
+    return {
+      getItem: function (key) { return key in mem ? mem[key] : null; },
+      setItem: function (key, val) { mem[key] = String(val); },
+      removeItem: function (key) { delete mem[key]; }
+    };
   })();
 
   var REPLY_CURSOR_KEY = "cgChatReplyCursor";

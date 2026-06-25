@@ -17,6 +17,8 @@ EN: dict[str, str] = {
     "Reservar": "Book",
     "Navegación": "Navigation",
     "Síguenos": "Follow us",
+    "Hab.": "Room",
+    "Foto ampliada": "Enlarged photo",
     "Inicio": "Home",
 
     # hero

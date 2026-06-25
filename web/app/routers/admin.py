@@ -44,7 +44,8 @@ async def api_escalations(pending: bool = Query(default=False),
         "items": [
             {
                 "id": e.id, "motivo": e.motivo, "mensaje": e.mensaje,
-                "idioma": e.idioma, "contacto": e.contacto, "contexto": e.contexto,
+                "idioma": e.idioma, "contacto": e.contacto, "canal": e.canal,
+                "contexto": e.contexto,
                 "thread_id": e.thread_id, "atendido": e.atendido,
                 "creado_en": e.creado_en.isoformat() if e.creado_en else None,
             }

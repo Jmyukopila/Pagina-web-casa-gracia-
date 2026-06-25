@@ -56,18 +56,39 @@ TOOLS_SCHEMA = [
         "function": {
             "name": "escalate_to_human",
             "description": ("Deriva la conversación a recepción (quejas, cambios o cancelaciones de "
-                            "reserva, dudas que no puedes resolver). Devuelve el contacto de WhatsApp "
-                            "del hotel para que el cliente hable con una persona."),
+                            "reserva, dudas que no puedes resolver). ANTES de llamarla, pregunta al "
+                            "cliente cómo prefiere que recepción le responda (WhatsApp o correo) y pide "
+                            "ese dato de contacto. Llama a esta función SOLO cuando ya tengas el canal "
+                            "y el contacto; el sistema los guarda para que recepción le escriba."),
             "parameters": {
                 "type": "object",
                 "properties": {
                     "reason": {"type": "string", "description": "Motivo breve del escalado"},
+                    "channel": {"type": "string", "enum": ["whatsapp", "correo"],
+                                "description": "Canal elegido por el cliente para que le respondan."},
+                    "contact": {"type": "string",
+                                "description": "Número de WhatsApp o correo del cliente (según el canal)."},
                 },
-                "required": ["reason"],
+                "required": ["reason", "channel", "contact"],
             },
         },
     },
 ]
+
+
+_CHANNEL_LABEL = {"whatsapp": "WhatsApp", "correo": "correo",
+                  "email": "correo", "wa": "WhatsApp"}
+
+
+def _norm_channel(channel: str | None) -> str | None:
+    if not channel:
+        return None
+    c = channel.strip().lower()
+    if c in ("whatsapp", "wa", "wsp", "ws"):
+        return "whatsapp"
+    if c in ("correo", "email", "mail", "e-mail"):
+        return "correo"
+    return None
 
 
 def _usd(cop: int) -> int:
@@ -129,25 +150,35 @@ async def _check_availability(db: AsyncSession, check_in: str, check_out: str,
 
 
 async def _escalate(db: AsyncSession, reason: str, user_text: str,
-                    context: str, thread_id: str | None = None) -> dict:
+                    context: str, channel: str | None = None,
+                    contact: str | None = None,
+                    thread_id: str | None = None) -> dict:
     # Persist the hand-off so reception never loses it. Never let a DB hiccup
     # break the chat reply.
+    canal = _norm_channel(channel)
+    # Prefer the contact the guest explicitly gave; fall back to scanning text.
+    contacto = (contact or "").strip() or crud.extract_contact(
+        f"{user_text or ''} {context or ''}")
     try:
         lang = detect_lang((user_text or context or "").lower())
         await crud.create_escalation(
             db, motivo=reason, mensaje=(user_text or None), idioma=lang,
-            contexto=(context or None),
-            contacto=crud.extract_contact(f"{user_text or ''} {context or ''}"),
-            thread_id=thread_id,
+            contexto=(context or None), contacto=(contacto or None),
+            canal=canal, thread_id=thread_id,
         )
     except Exception:
         log.exception("Could not persist chatbot escalation")
-    wa = settings.hotel_whatsapp
+    label = _CHANNEL_LABEL.get(canal or "", "")
     return {
         "ok": True,
-        "message": "Pásale al cliente el contacto de recepción por WhatsApp para que lo atienda una persona.",
-        "whatsapp_url": f"https://wa.me/{wa}" if wa else "",
-        "email": settings.hotel_email,
+        "channel": canal,
+        "contact_saved": contacto or None,
+        "message": (
+            f"Listo: recepción recibirá la solicitud y le escribirá al cliente por "
+            f"{label} a {contacto}. Confírmaselo con amabilidad." if canal and contacto
+            else "Falta el canal (WhatsApp o correo) o el dato de contacto del cliente. "
+                 "Pídeselo antes de escalar."
+        ),
         "reason": reason,
     }
 
@@ -180,7 +211,10 @@ async def run_tool(name: str, args: dict, db: AsyncSession,
                                          _as_int(args.get("guests"), 2)))
     elif name == "escalate_to_human":
         out = await _escalate(db, args.get("reason", "Sin especificar"),
-                              user_text, context, thread_id)
+                              user_text, context,
+                              channel=args.get("channel"),
+                              contact=args.get("contact"),
+                              thread_id=thread_id)
     else:
         out = {"error": f"Herramienta desconocida: {name}"}
     return json.dumps(out, ensure_ascii=False)
