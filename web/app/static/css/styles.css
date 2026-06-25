@@ -68,6 +68,10 @@ section{padding:88px 0}
 
 /* Photo lightbox (zoom) */
 body.lightbox-on{overflow:hidden}
+/* The [hidden] attribute must fully hide the overlay; otherwise the .lightbox
+   display:flex below would keep an invisible full-screen layer on top of the
+   page, swallowing clicks and showing a zoom cursor. */
+.lightbox[hidden]{display:none}
 .lightbox{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
   padding:24px;background:rgba(28,25,22,.92);opacity:0;transition:opacity .2s ease;cursor:zoom-out}
 .lightbox.is-open{opacity:1}
