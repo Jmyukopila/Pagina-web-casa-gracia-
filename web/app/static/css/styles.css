@@ -294,9 +294,11 @@ body.lightbox-on{overflow:hidden}
 
 /* Intro: larger image with an offset outlined frame; Location: mirrored split */
 .split--offset{grid-template-columns:1fr 1.18fr;gap:56px}
-.media-frame{position:relative}
-.media-frame::before{content:"";position:absolute;inset:20px -20px -20px 20px;
-  border:2px solid var(--caramel-l);border-radius:var(--radius-lg);z-index:0;pointer-events:none}
+.media-frame{position:relative;align-self:start}
+/* Marco fino pegado a la foto, parejo en los cuatro lados (sin desfase). */
+.media-frame::before{content:"";position:absolute;inset:-10px;
+  border:2px solid var(--caramel-l);border-radius:calc(var(--radius-lg) + 10px);
+  z-index:0;pointer-events:none}
 .media-frame>*{position:relative;z-index:1}
 /* La foto llena el marco siempre cuadrada (cualquier proporción de origen). */
 .media-frame picture{display:block}
