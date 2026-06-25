@@ -173,7 +173,7 @@
       <a class="btn" href="/reservar" style="margin-top:1.4rem">{{ t("Reservar mi estadía") }}</a>
     </div>
     <iframe class="map-embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-      src="https://maps.google.com/maps?q={{ hotel.lat }},{{ hotel.lng }}&z=15&output=embed"></iframe>
+      src="https://maps.google.com/maps?q={{ (hotel.name ~ ', ' ~ hotel.address) | urlencode }}&z=16&output=embed"></iframe>
   </div>
 </section>
 
