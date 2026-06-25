@@ -83,7 +83,9 @@ class Settings(BaseSettings):
 
     # --- Reviews ---------------------------------------------------------
     reviews_require_approval: bool = True
-    admin_token: str = "change-me-admin-token"        # to approve reviews
+    admin_token: str = "change-me-admin-token"        # session secret / JSON API
+    admin_user: str = "admin"                         # dashboard login user
+    admin_password: str = ""                           # dashboard login pass (env)
 
     # --- Rate limiting ---------------------------------------------------
     rate_limit_per_minute: int = 60
