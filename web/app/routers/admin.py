@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .. import crud
 from ..config import settings
 from ..database import get_session
+from ..deps import is_valid_admin_login as _valid_login
 from ..deps import is_valid_admin_token as _valid
 from ..deps import render
 
@@ -64,25 +65,44 @@ def _require_ui(request: Request, token: str = Query(default="")) -> None:
         raise HTTPException(status_code=401, detail="No autorizado.")
 
 
+def _set_session(resp, tok: str) -> None:
+    """Store the session secret (the admin token) in an httpOnly cookie (12h)."""
+    resp.set_cookie(COOKIE, tok, httponly=True, samesite="lax",
+                    max_age=43200, secure=settings.is_prod)
+
+
 @ui_router.get("")
 async def dashboard(request: Request, token: str = Query(default=""),
+                    bad: int = Query(default=0),
                     db: AsyncSession = Depends(get_session)):
     tok = _token_from(request, token)
     if not _valid(tok):
-        # Show a small login form (flag an error only if a token was attempted).
-        return render(request, "admin_login.html", bad=bool(token))
+        # Show the login form (error only after a failed login or wrong token).
+        return render(request, "admin_login.html", bad=bool(token) or bool(bad))
 
     bookings = await crud.list_recent_bookings(db, 50)
     pending_reviews = await crud.list_pending_reviews(db, 50)
     escalations = await crud.list_escalations(db, pending_only=False, limit=100)
     pending_count = sum(1 for e in escalations if not e.atendido)
+    pending_bookings = sum(1 for b in bookings if b.estado == "pendiente")
 
     resp = render(request, "admin.html", bookings=bookings,
                   pending_reviews=pending_reviews, escalations=escalations,
-                  pending_count=pending_count, lobby_enabled=settings.lobby_enabled)
+                  pending_count=pending_count, pending_bookings=pending_bookings,
+                  lobby_enabled=settings.lobby_enabled)
     if token:  # arrived via ?token= -> remember it (12h, httpOnly).
-        resp.set_cookie(COOKIE, tok, httponly=True, samesite="lax",
-                        max_age=43200, secure=settings.is_prod)
+        _set_session(resp, tok)
+    return resp
+
+
+@ui_router.post("/login")
+async def login(user: str = Form(default=""), password: str = Form(default="")):
+    """Dashboard login with user + password. On success the session cookie holds
+    the admin token (the session secret), never the password."""
+    if not _valid_login(user, password) or not _valid(settings.admin_token):
+        return RedirectResponse("/admin?bad=1", status_code=303)
+    resp = RedirectResponse("/admin", status_code=303)
+    _set_session(resp, settings.admin_token)
     return resp
 
 

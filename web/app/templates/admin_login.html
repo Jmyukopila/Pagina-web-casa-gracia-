@@ -1,26 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
+{% from "_icons.html" import icon %}
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Admin · {{ hotel.name }}</title>
+  <title>Acceso · {{ hotel.name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/styles.css?v={{ asset_v }}">
+  <link rel="stylesheet" href="/static/css/admin.css?v={{ asset_v }}">
 </head>
-<body style="background:var(--cream)">
-  <div class="container" style="max-width:420px;padding-top:12vh">
-    <div class="card">
-      <h2 style="margin-top:0">Panel de administración</h2>
-      <p class="muted">Introduce el token de acceso.</p>
-      {% if bad %}<div class="notice err">Token incorrecto.</div>{% endif %}
-      <form method="get" action="/admin" style="margin-top:1rem">
-        <div class="field">
-          <input type="password" name="token" placeholder="ADMIN_TOKEN" autofocus
-                 style="width:100%;box-sizing:border-box">
+<body>
+  <div class="adm-login">
+    <form class="adm-login__card" method="post" action="/admin/login">
+      <div class="adm-login__brand">
+        <span class="adm-brand__mark">{{ icon('shield', 20) }}</span>
+        <div>
+          <h1>Panel de administración</h1>
+          <p class="muted">{{ hotel.name }}</p>
         </div>
-        <button class="btn btn--block" type="submit" style="margin-top:1rem">Entrar</button>
-      </form>
-    </div>
+      </div>
+
+      {% if bad %}<div class="adm-error">Usuario o contraseña incorrectos.</div>{% endif %}
+
+      <div class="adm-field">
+        <label for="adm-user">Usuario</label>
+        <input id="adm-user" type="text" name="user" autocomplete="username"
+               autofocus required>
+      </div>
+      <div class="adm-field">
+        <label for="adm-pass">Contraseña</label>
+        <input id="adm-pass" type="password" name="password"
+               autocomplete="current-password" required>
+      </div>
+
+      <button class="btn btn--block" type="submit">Entrar</button>
+    </form>
   </div>
 </body>
 </html>

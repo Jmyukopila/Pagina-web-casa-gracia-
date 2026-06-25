@@ -1,166 +1,208 @@
 <!DOCTYPE html>
 <html lang="es">
+{% from "_icons.html" import icon %}
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Admin · {{ hotel.name }}</title>
+  <title>Panel · {{ hotel.name }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/styles.css?v={{ asset_v }}">
-  <style>
-    .adm-wrap{max-width:1100px;margin:0 auto;padding:28px 20px 64px}
-    .adm-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px}
-    .adm-grid{display:grid;gap:10px}
-    .adm-row{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-    .adm-row--done{opacity:.55}
-    .adm-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--caramel-d);margin-bottom:4px}
-    table.adm{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-    table.adm th,table.adm td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:.9rem}
-    table.adm th{background:var(--cream);font-weight:600}
-    .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:600}
-    .b-pend{background:var(--cream);color:var(--caramel-d)}
-    .b-conf{background:#eaf3ee;color:var(--ok)}
-    .b-exp{background:#f3efe9;color:#8a7d6c}
-    .b-canc{background:#f7e9e7;color:var(--err)}
-    .b-ext{background:#e9eef7;color:#3a567f}
-    .adm-section{margin-top:36px}
-    .adm-count{background:var(--caramel);color:#fff;border-radius:999px;padding:1px 10px;font-size:.85rem;margin-left:6px}
-    .inline{display:inline}
-  </style>
+  <link rel="stylesheet" href="/static/css/admin.css?v={{ asset_v }}">
 </head>
-<body style="background:var(--sand)">
-<div class="adm-wrap">
-  <div class="adm-head">
-    <h1 style="margin:0;font-size:1.6rem">Panel · {{ hotel.name }}</h1>
-    <div style="display:flex;gap:8px">
+<body>
+<div class="adm">
+
+  {# ---------- Sidebar ---------- #}
+  <aside class="adm-side">
+    <div class="adm-brand">
+      <span class="adm-brand__mark">{{ icon('shield', 18) }}</span>
+      <div>
+        <div class="adm-brand__name">{{ hotel.name }}</div>
+        <div class="adm-brand__sub">Panel</div>
+      </div>
+    </div>
+
+    <nav class="adm-nav">
+      <button class="adm-nav__item is-active" type="button" data-panel="escalaciones">
+        {{ icon('alert', 18) }}<span class="adm-nav__label">Escalaciones</span>
+        {% if pending_count %}<span class="adm-nav__count adm-nav__count--alert">{{ pending_count }}</span>{% endif %}
+      </button>
+      <button class="adm-nav__item" type="button" data-panel="opiniones">
+        {{ icon('star', 18) }}<span class="adm-nav__label">Opiniones</span>
+        {% if pending_reviews %}<span class="adm-nav__count">{{ pending_reviews|length }}</span>{% endif %}
+      </button>
+      <button class="adm-nav__item" type="button" data-panel="reservas">
+        {{ icon('bed', 18) }}<span class="adm-nav__label">Reservas</span>
+      </button>
+    </nav>
+
+    <div class="adm-side__foot">
       {% if lobby_enabled %}
       <form class="inline" method="post" action="/admin/lobby/sync">
-        <button class="btn btn--sm" type="submit">Sincronizar con Lobby</button>
+        <button class="btn btn--sm adm-ghost-d" type="submit">Sincronizar con Lobby</button>
       </form>
       {% endif %}
-      <a class="btn btn--ghost btn--sm" href="/admin/salir">Salir</a>
+      <a class="btn btn--sm adm-ghost-d" href="/admin/salir">Cerrar sesión</a>
     </div>
-  </div>
+  </aside>
 
-  {# --- Escalaciones del chatbot --- #}
-  <div class="adm-section">
-    <h2>Escalaciones del chatbot
-      {% if pending_count %}<span class="adm-count">{{ pending_count }} sin atender</span>{% endif %}
-    </h2>
-    {% if not escalations %}
-      <p class="muted">No hay escalaciones registradas.</p>
-    {% else %}
-    <div class="adm-grid">
-      {% for e in escalations %}
-      <div class="adm-row {{ 'adm-row--done' if e.atendido else '' }}">
-        <div class="adm-meta">
-          <span>#{{ e.id }}</span>
-          <span>{{ e.creado_en.strftime('%Y-%m-%d %H:%M') if e.creado_en else '' }}</span>
-          <span>{{ e.idioma|upper }}</span>
-          {% if e.canal %}<span>Canal: <strong>{{ 'WhatsApp' if e.canal == 'whatsapp' else 'Correo' }}</strong></span>{% endif %}
-          {% if e.contacto %}<span>Contacto: <strong>{{ e.contacto }}</strong></span>{% endif %}
-        </div>
-        <div><strong>Motivo:</strong> {{ e.motivo }}</div>
-        {% if e.mensaje %}<div class="muted">"{{ e.mensaje }}"</div>{% endif %}
-        {% if e.contexto %}
-        <details style="margin-top:6px">
-          <summary class="muted" style="cursor:pointer">Ver conversación</summary>
-          <pre style="white-space:pre-wrap;font-size:.82rem;margin:.5rem 0 0">{{ e.contexto }}</pre>
-        </details>
-        {% endif %}
-        {% if e.thread_id %}
-        <form method="post" action="/admin/escalaciones/{{ e.id }}/responder"
-              style="margin-top:10px;display:flex;gap:8px;align-items:flex-end">
-          <textarea name="texto" rows="2" required
-                    placeholder="Responder en el chat del huésped…"
-                    style="flex:1;min-width:0;font-family:inherit;font-size:.9rem;
-                           padding:.5rem .7rem;border:1px solid var(--line);border-radius:10px"></textarea>
-          <button class="btn btn--sm" type="submit">Responder en el chat</button>
-        </form>
-        <p class="muted" style="font-size:.78rem;margin:.35rem 0 0">
-          Se mostrará al instante si tiene el chat abierto, o la próxima vez que lo abra.
-        </p>
-        {% else %}
-        <p class="muted" style="font-size:.78rem;margin:10px 0 0">
-          Sin chat en vivo para responder
-          {% if e.contacto %}— contacta por {{ 'WhatsApp' if e.canal == 'whatsapp' else ('correo' if e.canal == 'correo' else 'el contacto') }} <strong>{{ e.contacto }}</strong>{% endif %}.
-        </p>
-        {% endif %}
-        <div style="margin-top:10px">
-          {% if e.atendido %}
-            <span class="badge b-conf">Atendido</span>
-          {% else %}
-            <form class="inline" method="post" action="/admin/escalaciones/{{ e.id }}/atender">
-              <button class="btn btn--sm" type="submit">Marcar atendido</button>
-            </form>
+  {# ---------- Main ---------- #}
+  <main class="adm-main">
+    <div class="adm-topbar">
+      <h1>Panel de administración</h1>
+      <span class="muted">{{ hotel.name }}</span>
+    </div>
+
+    {# KPI cards #}
+    <div class="adm-kpis">
+      <div class="kpi">
+        <span class="kpi__ic">{{ icon('bed', 22) }}</span>
+        <div><div class="kpi__num">{{ bookings|length }}</div>
+          <div class="kpi__label">Reservas recientes</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic">{{ icon('clock', 22) }}</span>
+        <div><div class="kpi__num">{{ pending_bookings }}</div>
+          <div class="kpi__label">Reservas pendientes</div></div>
+      </div>
+      <div class="kpi {{ 'kpi--alert' if pending_count else '' }}">
+        <span class="kpi__ic">{{ icon('alert', 22) }}</span>
+        <div><div class="kpi__num">{{ pending_count }}</div>
+          <div class="kpi__label">Escalaciones sin atender</div></div>
+      </div>
+      <div class="kpi">
+        <span class="kpi__ic">{{ icon('star', 22) }}</span>
+        <div><div class="kpi__num">{{ pending_reviews|length }}</div>
+          <div class="kpi__label">Opiniones por aprobar</div></div>
+      </div>
+    </div>
+
+    {# ----- Escalaciones ----- #}
+    <section class="adm-panel is-active" id="panel-escalaciones">
+      <div class="adm-panel__head">
+        <h2>Escalaciones del chatbot</h2>
+        {% if pending_count %}<span class="badge b-canc">{{ pending_count }} sin atender</span>{% endif %}
+      </div>
+      {% if not escalations %}
+        <div class="adm-empty">No hay escalaciones registradas.</div>
+      {% else %}
+      <div class="adm-grid">
+        {% for e in escalations %}
+        <div class="card-row {{ 'card-row--done' if e.atendido else '' }}">
+          <div class="card-row__meta">
+            <span class="chip chip--id">#{{ e.id }}</span>
+            <span class="chip">{{ icon('clock', 13) }}{{ e.creado_en.strftime('%Y-%m-%d %H:%M') if e.creado_en else '' }}</span>
+            <span class="chip">{{ icon('globe', 13) }}{{ e.idioma|upper }}</span>
+            {% if e.canal %}<span class="chip">{{ 'WhatsApp' if e.canal == 'whatsapp' else 'Correo' }}</span>{% endif %}
+            {% if e.contacto %}<span class="chip">{{ icon('user', 13) }}{{ e.contacto }}</span>{% endif %}
+          </div>
+          <div class="card-row__title"><strong>Motivo:</strong> {{ e.motivo }}</div>
+          {% if e.mensaje %}<p class="card-row__quote">"{{ e.mensaje }}"</p>{% endif %}
+          {% if e.contexto %}
+          <details class="adm-details">
+            <summary>Ver conversación</summary>
+            <pre>{{ e.contexto }}</pre>
+          </details>
           {% endif %}
+          {% if e.thread_id %}
+          <form class="reply-form" method="post" action="/admin/escalaciones/{{ e.id }}/responder">
+            <textarea name="texto" rows="2" required placeholder="Responder en el chat del huésped…"></textarea>
+            <button class="btn btn--sm" type="submit">Responder en el chat</button>
+          </form>
+          <p class="hint">Se mostrará al instante si tiene el chat abierto, o la próxima vez que lo abra.</p>
+          {% else %}
+          <p class="hint">
+            Sin chat en vivo para responder
+            {% if e.contacto %}— contacta por {{ 'WhatsApp' if e.canal == 'whatsapp' else ('correo' if e.canal == 'correo' else 'el contacto') }} <strong>{{ e.contacto }}</strong>{% endif %}.
+          </p>
+          {% endif %}
+          <div class="card-row__foot">
+            {% if e.atendido %}
+              <span class="badge b-conf">Atendido</span>
+            {% else %}
+              <form class="inline" method="post" action="/admin/escalaciones/{{ e.id }}/atender">
+                <button class="btn btn--sm btn--ghost" type="submit">Marcar atendido</button>
+              </form>
+            {% endif %}
+          </div>
         </div>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </div>
-
-  {# --- Opiniones pendientes --- #}
-  <div class="adm-section">
-    <h2>Opiniones por aprobar
-      {% if pending_reviews %}<span class="adm-count">{{ pending_reviews|length }}</span>{% endif %}
-    </h2>
-    {% if not pending_reviews %}
-      <p class="muted">No hay opiniones pendientes.</p>
-    {% else %}
-    <div class="adm-grid">
-      {% for r in pending_reviews %}
-      <div class="adm-row">
-        <div class="adm-meta">
-          <span>#{{ r.id }}</span>
-          <span>{{ r.creado_en.strftime('%Y-%m-%d') if r.creado_en else '' }}</span>
-          <span>{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</span>
-        </div>
-        <div><strong>{{ r.autor }}</strong>{% if r.pais %} · {{ r.pais }}{% endif %}
-          {% if r.titulo %} — {{ r.titulo }}{% endif %}</div>
-        <div class="muted">{{ r.cuerpo }}</div>
-        <form class="inline" method="post" action="/admin/opiniones/{{ r.id }}/aprobar" style="margin-top:10px">
-          <button class="btn btn--sm" type="submit">Aprobar y publicar</button>
-        </form>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </div>
-
-  {# --- Reservas recientes --- #}
-  <div class="adm-section">
-    <h2>Reservas recientes</h2>
-    {% if not bookings %}
-      <p class="muted">Aún no hay reservas.</p>
-    {% else %}
-    <div style="overflow-x:auto">
-    <table class="adm">
-      <thead>
-        <tr><th>Referencia</th><th>Habitación</th><th>Cliente</th><th>Fechas</th>
-            <th>Valor</th><th>Origen</th><th>Estado</th></tr>
-      </thead>
-      <tbody>
-        {% for b in bookings %}
-        <tr>
-          <td>{{ b.referencia }}</td>
-          <td>{{ b.habitacion.nom_hab if b.habitacion else b.id_hab }}</td>
-          <td>{{ b.cliente.nombre if b.cliente else '' }}<br>
-              <span class="muted" style="font-size:.8rem">{{ b.cliente.correo if b.cliente else '' }}</span></td>
-          <td>{{ b.fecha_in }} → {{ b.fecha_fi }}</td>
-          <td>{{ b.valor | cop }}</td>
-          <td><span class="muted" style="font-size:.82rem">{{ b.origen }}</span></td>
-          <td>
-            {% set st = b.estado %}
-            <span class="badge {{ {'pendiente':'b-pend','confirmada':'b-conf','expirada':'b-exp','cancelada':'b-canc','externa':'b-ext'}.get(st,'b-pend') }}">{{ st }}</span>
-          </td>
-        </tr>
         {% endfor %}
-      </tbody>
-    </table>
-    </div>
-    {% endif %}
-  </div>
+      </div>
+      {% endif %}
+    </section>
+
+    {# ----- Opiniones ----- #}
+    <section class="adm-panel" id="panel-opiniones">
+      <div class="adm-panel__head">
+        <h2>Opiniones por aprobar</h2>
+        {% if pending_reviews %}<span class="badge b-pend">{{ pending_reviews|length }}</span>{% endif %}
+      </div>
+      {% if not pending_reviews %}
+        <div class="adm-empty">No hay opiniones pendientes.</div>
+      {% else %}
+      <div class="adm-grid">
+        {% for r in pending_reviews %}
+        <div class="card-row">
+          <div class="card-row__meta">
+            <span class="chip chip--id">#{{ r.id }}</span>
+            <span class="chip">{{ icon('clock', 13) }}{{ r.creado_en.strftime('%Y-%m-%d') if r.creado_en else '' }}</span>
+            <span class="stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</span>
+          </div>
+          <div class="card-row__title"><strong>{{ r.autor }}</strong>{% if r.pais %} · {{ r.pais }}{% endif %}
+            {% if r.titulo %} — {{ r.titulo }}{% endif %}</div>
+          <p class="card-row__quote">{{ r.cuerpo }}</p>
+          <div class="card-row__foot">
+            <form class="inline" method="post" action="/admin/opiniones/{{ r.id }}/aprobar">
+              <button class="btn btn--sm" type="submit">Aprobar y publicar</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </section>
+
+    {# ----- Reservas ----- #}
+    <section class="adm-panel" id="panel-reservas">
+      <div class="adm-panel__head">
+        <h2>Reservas recientes</h2>
+      </div>
+      {% if not bookings %}
+        <div class="adm-empty">Aún no hay reservas.</div>
+      {% else %}
+      <div class="adm-tablewrap">
+        <table class="adm-table">
+          <thead>
+            <tr><th>Referencia</th><th>Habitación</th><th>Cliente</th><th>Fechas</th>
+                <th>Valor</th><th>Origen</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            {% for b in bookings %}
+            <tr>
+              <td>{{ b.referencia }}</td>
+              <td>{{ b.habitacion.nom_hab if b.habitacion else b.id_hab }}</td>
+              <td>{{ b.cliente.nombre if b.cliente else '' }}
+                  <span class="cell-sub">{{ b.cliente.correo if b.cliente else '' }}</span></td>
+              <td>{{ b.fecha_in }} → {{ b.fecha_fi }}</td>
+              <td>{{ b.valor | cop }}</td>
+              <td><span class="cell-sub">{{ b.origen }}</span></td>
+              <td>
+                {% set st = b.estado %}
+                <span class="badge {{ {'pendiente':'b-pend','confirmada':'b-conf','expirada':'b-exp','cancelada':'b-canc','externa':'b-ext'}.get(st,'b-pend') }}">{{ st }}</span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </section>
+
+  </main>
 </div>
+<script src="/static/js/admin.js?v={{ asset_v }}"></script>
 </body>
 </html>

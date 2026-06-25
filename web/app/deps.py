@@ -76,6 +76,19 @@ def is_valid_admin_token(token: str) -> bool:
     return secrets.compare_digest(token, expected)
 
 
+def is_valid_admin_login(user: str, password: str) -> bool:
+    """Constant-time check of the dashboard user+password. An empty/unset
+    password is always rejected, so an unconfigured deploy can't be logged into
+    with blank credentials (the ?token= path stays as an emergency fallback)."""
+    exp_user = settings.admin_user
+    exp_pass = settings.admin_password
+    if not exp_pass or not user or not password:
+        return False
+    ok_user = secrets.compare_digest(user, exp_user)
+    ok_pass = secrets.compare_digest(password, exp_pass)
+    return ok_user and ok_pass
+
+
 def t_for(request: Request):
     """Return a translate function bound to the request's language (for routes)."""
     lang = i18n.get_lang(request)
