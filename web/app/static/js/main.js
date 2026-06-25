@@ -154,4 +154,45 @@
     }, { threshold: 0.6 });
     nums.forEach((el) => nio.observe(el));
   }
+
+  // ---- Photo lightbox: tap a room photo to zoom it full-screen -------------
+  const lb = document.getElementById("lightbox");
+  if (lb) {
+    const lbImg = document.getElementById("lightboxImg");
+    const lbClose = document.getElementById("lightboxClose");
+    // Zoomable photos: room detail gallery + room showcase covers.
+    const zoomables = document.querySelectorAll(
+      ".gallery img, .room-show__media img");
+
+    function openLb(src, alt) {
+      lbImg.src = src;
+      lbImg.alt = alt || "";
+      lb.hidden = false;
+      lb.setAttribute("aria-hidden", "false");
+      document.body.classList.add("lightbox-on");
+      // allow the [hidden]->visible transition to run
+      requestAnimationFrame(() => lb.classList.add("is-open"));
+    }
+    function closeLb() {
+      lb.classList.remove("is-open");
+      lb.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("lightbox-on");
+      setTimeout(() => { lb.hidden = true; lbImg.src = ""; }, 200);
+    }
+
+    zoomables.forEach((img) => {
+      img.style.cursor = "zoom-in";
+      img.addEventListener("click", (e) => {
+        // Inside an <a>? Don't follow the link — zoom instead.
+        if (img.closest("a")) e.preventDefault();
+        // Prefer the full-size JPG source if a <picture> webp is shown.
+        openLb(img.currentSrc || img.src, img.alt);
+      });
+    });
+    lb.addEventListener("click", (e) => { if (e.target !== lbImg) closeLb(); });
+    lbClose && lbClose.addEventListener("click", closeLb);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !lb.hidden) closeLb();
+    });
+  }
 })();

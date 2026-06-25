@@ -56,6 +56,7 @@
           <span>#{{ e.id }}</span>
           <span>{{ e.creado_en.strftime('%Y-%m-%d %H:%M') if e.creado_en else '' }}</span>
           <span>{{ e.idioma|upper }}</span>
+          {% if e.canal %}<span>Canal: <strong>{{ 'WhatsApp' if e.canal == 'whatsapp' else 'Correo' }}</strong></span>{% endif %}
           {% if e.contacto %}<span>Contacto: <strong>{{ e.contacto }}</strong></span>{% endif %}
         </div>
         <div><strong>Motivo:</strong> {{ e.motivo }}</div>
@@ -81,7 +82,7 @@
         {% else %}
         <p class="muted" style="font-size:.78rem;margin:10px 0 0">
           Sin chat en vivo para responder
-          {% if e.contacto %}— contacta por <strong>{{ e.contacto }}</strong>{% endif %}.
+          {% if e.contacto %}— contacta por {{ 'WhatsApp' if e.canal == 'whatsapp' else ('correo' if e.canal == 'correo' else 'el contacto') }} <strong>{{ e.contacto }}</strong>{% endif %}.
         </p>
         {% endif %}
         <div style="margin-top:10px">

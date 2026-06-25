@@ -12,7 +12,7 @@
     <span class="room-show__type">{{ room.room_type }}</span>
   </a>
   <div class="room-show__body">
-    <span class="room-show__num">{{ '%02d'|format(idx) }}</span>
+    <span class="room-show__num">{{ t("Hab.") }} {{ room.slug }}</span>
     <h2><a href="{{ room_url }}">{{ room_name(room) }}</a></h2>
     <div class="room-show__specs">
       <span>{{ icon('user', 17) }} {{ t("Hasta {n} huéspedes").format(n=room.max_occupancy) }}</span>
