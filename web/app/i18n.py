@@ -17,7 +17,6 @@ EN: dict[str, str] = {
     "Reservar": "Book",
     "Navegación": "Navigation",
     "Síguenos": "Follow us",
-    "Hecho con cariño · Reserva directa": "Made with care · Direct booking",
     "Inicio": "Home",
 
     # hero
@@ -122,10 +121,7 @@ EN: dict[str, str] = {
     "Mejor precio · Sin comisiones · Pago seguro": "Best price · No commissions · Secure booking",
     "Recién renovado en el tranquilo barrio de Manga, combinamos el encanto de una casa cartagenera con el confort de habitaciones modernas. Despierta con el sol, refréscate en la piscina y deja que el ritmo del Caribe marque tu día.":
         "Newly renovated in the quiet Manga neighborhood, we blend the charm of a Cartagena home with the comfort of modern rooms. Wake with the sun, cool off in the pool and let the Caribbean set the pace of your day.",
-    # ribbon + footer trust
-    "Reserva directa oficial": "Official direct booking",
-    "Mejor precio sin comisiones": "Best price, no commissions",
-    "Te confirmamos el mismo día": "Confirmed the same day",
+    # footer trust
     "Reserva directa segura": "Secure direct booking",
     "Mejor precio garantizado directo": "Best price guaranteed, direct",
     "Recepción 24 horas": "24-hour reception",
