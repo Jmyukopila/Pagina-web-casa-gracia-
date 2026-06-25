@@ -30,8 +30,8 @@ class Settings(BaseSettings):
     # --- Hotel info (shown across the site) ------------------------------
     hotel_name: str = "Casa Gracia Hotel Boutique"
     hotel_address: str = "Carrera 17 #26-133, Manga, Cartagena de Indias, Colombia"
-    hotel_lat: float = 10.4189
-    hotel_lng: float = -75.5375
+    hotel_lat: float = 10.4188
+    hotel_lng: float = -75.5412
     hotel_phone: str = "+57 300 000 0000"            # TODO: real number
     hotel_whatsapp: str = "573000000000"             # digits only, for wa.me
     hotel_email: str = "reservas@casagraciacartagena.com"
