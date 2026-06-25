@@ -70,15 +70,6 @@
 </head>
 <body>
 {% from "_icons.html" import icon %}
-<div class="ribbon">
-  <div class="container ribbon__inner">
-    <span>{{ t("Reserva directa oficial") }}</span>
-    <span class="ribbon__dot">·</span>
-    <span>{{ t("Mejor precio sin comisiones") }}</span>
-    <span class="ribbon__dot">·</span>
-    <span>{{ t("Te confirmamos el mismo día") }}</span>
-  </div>
-</div>
 <header class="nav" id="nav">
   <div class="container nav__inner">
     <a class="nav__brand" href="/" aria-label="{{ hotel.name }}">
@@ -92,6 +83,7 @@
       <a href="/opiniones">{{ t("Opiniones") }}</a>
       <a href="/contacto">{{ t("Contacto") }}</a>
       <span class="lang-switch">
+        <span class="lang-switch__ic" aria-hidden="true">{{ icon('globe', 16) }}</span>
         <a href="?lang=es" class="{{ 'is-active' if lang == 'es' else '' }}">ES</a>
         <a href="?lang=en" class="{{ 'is-active' if lang == 'en' else '' }}">EN</a>
       </span>
@@ -136,7 +128,6 @@
   </div>
   <div class="container footer__bottom">
     <span class="muted">© {{ hotel.name }} · Cartagena de Indias, Colombia</span>
-    <span class="muted">{{ t("Hecho con cariño · Reserva directa") }}</span>
   </div>
 </footer>
 

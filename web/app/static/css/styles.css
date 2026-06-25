@@ -64,6 +64,7 @@ section{padding:88px 0}
   border:1px solid var(--line);border-radius:999px;padding:2px;background:#fff}
 .lang-switch a{padding:.18rem .55rem;border-radius:999px;color:var(--muted);line-height:1}
 .lang-switch a.is-active{background:var(--caramel);color:#fff}
+.lang-switch__ic{display:inline-flex;align-items:center;color:var(--caramel);margin-left:4px}
 
 /* ---- Hero ---- */
 .hero{position:relative;min-height:88vh;display:flex;align-items:center;
@@ -288,11 +289,6 @@ section{padding:88px 0}
 /* ============================================================
    Conversion / hotel-marketing components (neuromarketing + trust).
    ============================================================ */
-/* Top value ribbon */
-.ribbon{background:var(--ink);color:#efe7da}
-.ribbon__inner{display:flex;align-items:center;justify-content:center;gap:10px;
-  flex-wrap:wrap;min-height:36px;font-size:.78rem;letter-spacing:.04em}
-.ribbon__dot{opacity:.4}
 
 /* Nav value hint (desktop) */
 .nav__hint{font-size:.74rem;letter-spacing:.03em;color:var(--caramel-d);font-weight:500;
@@ -445,7 +441,6 @@ section{padding:88px 0}
   /* Single-column content */
   .rooms-grid,.reviews-grid,.feature-grid,.feature-list,.form-grid,.amenities,.benefits-grid{grid-template-columns:1fr}
   .nav__hint{display:none}
-  .ribbon__inner{font-size:.72rem;gap:7px}
   .sticky-cta{display:flex}
   /* booking bar sits BELOW the hero on mobile (desktop keeps the floating overlap) */
   .bookbar{grid-template-columns:1fr;padding:16px;border-radius:var(--radius);margin:28px auto 0}
