@@ -45,11 +45,11 @@ EN: dict[str, str] = {
         "Newly renovated in the quiet Manga neighborhood, our hotel blends the charm of a Cartagena home with the comfort of modern rooms. Enjoy the pool, the terrace and personalized service that makes your stay memorable.",
     "A 7 minutos a pie del Castillo de San Felipe de Barajas y a pocos minutos del Centro Histórico amurallado.":
         "A 7-minute walk from San Felipe de Barajas Castle and minutes from the walled Old Town.",
-    "Conoce el hotel": "About the hotel",
+    "Conoce el hotel": "Discover the hotel",
 
     # features
     "Lo que te espera": "What awaits you",
-    "Pensado para tu descanso": "Designed for your rest",
+    "Pensado para tu descanso": "Designed for relaxation",
     "Pequeños lujos pensados para que tu estadía sea fácil y memorable.":
         "Small comforts to make your stay easy and memorable.",
     "Piscina": "Pool",
@@ -72,7 +72,7 @@ EN: dict[str, str] = {
     "Cambiar fechas · ver todas": "Change dates · view all",
     "No hay disponibilidad para esas fechas": "No availability for those dates",
     "Prueba con otras fechas o escríbenos y te ayudamos a encontrar tu estadía.":
-        "Try other dates or message us and we'll help you find your stay.",
+        "Try other dates, or message us and we'll help you plan your stay.",
 
     # reviews section
     "Lo que dicen nuestros huéspedes": "What our guests say",
@@ -97,16 +97,14 @@ EN: dict[str, str] = {
     "A pasos del Castillo de San Felipe": "Steps from San Felipe Castle",
     "Consulta disponibilidad y reserva al mejor precio": "Check availability and book at the best price",
     "Ver disponibilidad": "Check availability",
-    "Confirmación el mismo día · Sin tarjeta hasta confirmar · Pago seguro":
-        "Same-day confirmation · No card until confirmed · Secure booking",
     "Por qué reservar directo": "Why book direct",
-    "Reserva en el sitio oficial y gana": "Book on the official site and win",
+    "Reserva en el sitio oficial y gana": "Book on the official site and get more",
     "Mejor precio, siempre": "The best price, always",
     "Sin comisiones de intermediarios: la tarifa más baja la encuentras aquí.":
         "No middleman fees: the lowest rate is right here.",
     "Trato directo": "Direct service",
     "Hablas con el hotel, no con una central. Atención cercana y personalizada.":
-        "You talk to the hotel, not a call center. Close, personal attention.",
+        "You talk to the hotel, not a call center. Warm, personal service.",
     "Flexibilidad": "Flexibility",
     "Gestionamos tu reserva y tus peticiones especiales sin intermediarios.":
         "We handle your booking and special requests with no middlemen.",
@@ -139,7 +137,7 @@ EN: dict[str, str] = {
     "Hasta {n} huéspedes": "Up to {n} guests",
     "Comodidades": "Amenities",
     "Comprobar disponibilidad": "Check availability",
-    "Apartas tu fecha al confirmar.": "Your dates are held on confirmation.",
+    "Apartas tu fecha al confirmar.": "We hold your dates the moment you confirm.",
 
     # booking page
     "Reserva directa · mejor precio": "Direct booking · best price",
@@ -175,7 +173,7 @@ EN: dict[str, str] = {
         "Your payment was approved. We've sent the details to {email}.",
     "¡Reserva registrada!": "Booking received!",
     "Tu reserva quedó registrada como pendiente. Te contactaremos para coordinar el pago y confirmarla. También puedes escribirnos por WhatsApp con tu referencia.":
-        "Your booking is registered as pending. We'll contact you to arrange payment and confirm it. You can also message us on WhatsApp with your reference.",
+        "Your booking is saved and pending confirmation. We'll be in touch to arrange payment and confirm it. You can also reach us on WhatsApp with your reference.",
     "No pudimos confirmar el pago": "We couldn't confirm the payment",
     "Tu reserva no se completó. Puedes intentar de nuevo o escribirnos por WhatsApp.":
         "Your booking wasn't completed. You can try again or message us on WhatsApp.",
@@ -238,10 +236,10 @@ EN: dict[str, str] = {
     "La fecha de salida debe ser posterior a la de entrada.": "The check-out date must be after the check-in date.",
     "Esas fechas ya no están disponibles para esta habitación.": "Those dates are no longer available for this room.",
     "Revisa los datos del formulario.": "Please check the form details.",
-    "Esta habitación admite máximo {n} huéspedes.": "This room allows a maximum of {n} guests.",
+    "Esta habitación admite máximo {n} huéspedes.": "This room sleeps up to {n} guests.",
     "Revisa los datos de tu opinión (calificación 1-5 y comentario).": "Please check your review (rating 1-5 and a comment).",
     "¡Gracias! Tu opinión fue publicada.": "Thank you! Your review has been published.",
-    "¡Gracias! Tu opinión será publicada tras una breve revisión.": "Thank you! Your review will be published after a short review.",
+    "¡Gracias! Tu opinión será publicada tras una breve revisión.": "Thank you! Your review will be published after a quick check.",
     "No encontramos la página que buscas.": "We couldn't find the page you're looking for.",
     "Tuvimos un problema procesando tu solicitud. Intenta de nuevo en unos momentos.":
         "We had a problem processing your request. Please try again in a moment.",
