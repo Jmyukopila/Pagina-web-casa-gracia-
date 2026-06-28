@@ -100,8 +100,8 @@ EN: dict[str, str] = {
     "Por qué reservar directo": "Why book direct",
     "Reserva en el sitio oficial y gana": "More reasons to book direct",
     "Mejor precio, siempre": "The best price, always",
-    "Sin comisiones de intermediarios: la tarifa más baja la encuentras aquí.":
-        "No middleman fees: the lowest rate is right here.",
+    "Reserva directo con nosotros y obtén nuestras mejores tarifas, garantizadas.":
+        "Book direct with us and get our best rates, guaranteed.",
     "Trato directo": "Direct service",
     "Hablas directamente con el hotel, no con una plataforma de reservas. Atención cercana y personalizada.":
         "You deal with the hotel directly, not a booking platform. Personal, attentive service.",
