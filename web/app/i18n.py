@@ -98,7 +98,7 @@ EN: dict[str, str] = {
     "Consulta disponibilidad y reserva al mejor precio": "Check availability and book at the best price",
     "Ver disponibilidad": "Check availability",
     "Por qué reservar directo": "Why book direct",
-    "Reserva en el sitio oficial y gana": "Book on the official site and get more",
+    "Reserva en el sitio oficial y gana": "More reasons to book direct",
     "Mejor precio, siempre": "The best price, always",
     "Sin comisiones de intermediarios: la tarifa más baja la encuentras aquí.":
         "No middleman fees: the lowest rate is right here.",
