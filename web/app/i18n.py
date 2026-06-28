@@ -89,7 +89,7 @@ EN: dict[str, str] = {
     "Reservar mi estadía": "Book my stay",
 
     # marketing / conversion (home)
-    "Tu refugio en el corazón de Cartagena": "Your retreat in the heart of Cartagena",
+    "Tu refugio en el corazón de Cartagena": "Your hideaway in the heart of Cartagena",
     "Hotel boutique con piscina y trato cercano, a pasos del Castillo de San Felipe. Reserva directo y paga el mejor precio.":
         "A boutique hotel with a pool and warm, personal service, steps from San Felipe Castle. Book direct and pay the best price.",
     "Reservar directo": "Book direct",
