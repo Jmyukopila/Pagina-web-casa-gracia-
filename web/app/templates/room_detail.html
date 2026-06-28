@@ -16,7 +16,7 @@
 <section style="padding-top:48px">
   <div class="container">
     <div class="gallery">
-      {% for img in room.images[:5] %}{{ picture(img, alt=room_name(room)) }}{% endfor %}
+      {{ picture(room.images[0] if room.images else '/static/img/rooms/613585235_ae5ac2cd.jpg', alt=room_name(room)) }}
     </div>
 
     <div class="detail-grid">
