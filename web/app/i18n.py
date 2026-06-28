@@ -103,11 +103,11 @@ EN: dict[str, str] = {
     "Sin comisiones de intermediarios: la tarifa más baja la encuentras aquí.":
         "No middleman fees: the lowest rate is right here.",
     "Trato directo": "Direct service",
-    "Hablas con el hotel, no con una central. Atención cercana y personalizada.":
-        "You talk to the hotel, not a call center. Warm, personal service.",
+    "Hablas directamente con el hotel, no con una plataforma de reservas. Atención cercana y personalizada.":
+        "You deal with the hotel directly, not a booking platform. Personal, attentive service.",
     "Flexibilidad": "Flexibility",
     "Gestionamos tu reserva y tus peticiones especiales sin intermediarios.":
-        "We handle your booking and special requests with no middlemen.",
+        "We handle your booking and special requests directly — no middlemen.",
     "Pago seguro": "Secure payment",
     "Sin tarjeta hasta confirmar y sin cargos ocultos.": "No card until confirmed, and no hidden fees.",
     "Habitaciones pensadas para descansar": "Rooms designed for rest",
