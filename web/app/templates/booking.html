@@ -22,7 +22,7 @@
             {% for r in rooms %}
             <option value="{{ r.id }}" data-max="{{ r.max_occupancy }}" data-price="{{ r.price_cop }}"
               {% if room and room.id == r.id %}selected{% endif %}>
-              {{ room_name(r) }} — {{ money(r.price_cop) }}/{{ t("por noche") }} ({{ t("máx {n}").format(n=r.max_occupancy) }})
+              {{ room_name(r) }} · {{ money(r.price_cop) }}/{{ t("por noche") }} ({{ t("máx {n}").format(n=r.max_occupancy) }})
             </option>{% endfor %}
           </select>
         </div>

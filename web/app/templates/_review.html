@@ -2,5 +2,5 @@
   <div class="stars">{{ "★" * r.rating }}<span style="color:var(--line)">{{ "★" * (5 - r.rating) }}</span></div>
   {% if r.title %}<h4>{{ r.title }}</h4>{% endif %}
   <p>“{{ r.body }}”</p>
-  <div class="review__who">— {{ r.author }}{% if r.country %}, {{ r.country }}{% endif %}</div>
+  <div class="review__who">{{ r.author }}{% if r.country %}, {{ r.country }}{% endif %}</div>
 </article>

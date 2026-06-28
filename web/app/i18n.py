@@ -107,9 +107,9 @@ EN: dict[str, str] = {
         "You deal with the hotel directly, not a booking platform. Personal, attentive service.",
     "Flexibilidad": "Flexibility",
     "Gestionamos tu reserva y tus peticiones especiales sin intermediarios.":
-        "We handle your booking and special requests directly — no middlemen.",
-    "Pago seguro": "Secure payment",
-    "Sin tarjeta hasta confirmar y sin cargos ocultos.": "No card until confirmed, and no hidden fees.",
+        "We handle your booking and special requests directly, with no middlemen.",
+    "Llega a la hora que llegues, siempre hay alguien para recibirte y ayudarte.":
+        "Arrive whenever you like, someone's always here to welcome and help you.",
     "Habitaciones pensadas para descansar": "Rooms designed for rest",
     "Espacios renovados, camas confortables y los pequeños detalles que hacen memorable tu estadía.":
         "Renovated spaces, comfortable beds and the little touches that make your stay memorable.",
