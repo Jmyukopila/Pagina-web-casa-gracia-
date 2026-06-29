@@ -186,6 +186,10 @@ EN: dict[str, str] = {
     # reviews page
     "Experiencias": "Experiences",
     "Opiniones de huéspedes": "Guest reviews",
+    "Filtrar por calificación": "Filter by rating",
+    "Todas": "All",
+    "{n} opiniones de {s} estrellas": "{n} reviews rated {s} stars",
+    "No hay opiniones con esta calificación.": "No reviews with this rating.",
     "Comparte tu experiencia": "Share your experience",
     "Nombre": "Name",
     "País": "Country",

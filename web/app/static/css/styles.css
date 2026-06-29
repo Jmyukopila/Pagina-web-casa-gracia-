@@ -218,6 +218,15 @@ body.lightbox-on{overflow:hidden}
 .review__who{margin-top:.8rem;font-size:.85rem;color:var(--muted)}
 .rating-big{display:flex;align-items:center;gap:1rem;justify-content:center;margin-bottom:1rem}
 .rating-big .num{font-family:'Cormorant Garamond';font-size:3rem;color:var(--caramel-d);font-weight:600}
+.review-filter{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:8px 0 4px}
+.chip{display:inline-flex;align-items:center;gap:.4rem;font-family:'Jost';font-size:.9rem;
+  color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;
+  padding:.46rem .9rem;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease}
+.chip:hover{border-color:var(--caramel-l);background:var(--cream)}
+.chip .stars{font-size:.85rem}
+.chip__n{font-size:.78rem;color:var(--muted);font-weight:500}
+.chip.is-active{background:var(--caramel);border-color:var(--caramel);color:#fff}
+.chip.is-active .stars,.chip.is-active .chip__n{color:#fff}
 
 /* ---- Forms / cards ---- */
 .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);

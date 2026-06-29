@@ -195,4 +195,34 @@
       if (e.key === "Escape" && !lb.hidden) closeLb();
     });
   }
+
+  // ---- Reviews: filter by star rating (client-side, instant) ---------------
+  const reviewFilter = document.getElementById("reviewFilter");
+  const reviewsList = document.getElementById("reviewsList");
+  if (reviewFilter && reviewsList) {
+    const chips = reviewFilter.querySelectorAll(".chip");
+    const cards = reviewsList.querySelectorAll(".review");
+    const emptyMsg = document.getElementById("reviewsEmpty");
+
+    function applyFilter(star) {
+      let shown = 0;
+      cards.forEach((card) => {
+        const match = star === "all" || card.dataset.rating === star;
+        card.hidden = !match;
+        if (match) shown++;
+      });
+      if (emptyMsg) emptyMsg.hidden = shown > 0;
+    }
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        chips.forEach((c) => {
+          const active = c === chip;
+          c.classList.toggle("is-active", active);
+          c.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        applyFilter(chip.dataset.star);
+      });
+    });
+  }
 })();

@@ -18,9 +18,27 @@
     {% if success %}<div class="notice ok">{{ success }}</div>{% endif %}
     {% if error %}<div class="notice err">{{ error }}</div>{% endif %}
 
-    <div class="reviews-grid" style="margin-top:0">
+    {% if reviews %}
+    <div class="review-filter" id="reviewFilter" role="group" aria-label="{{ t('Filtrar por calificación') }}">
+      <button type="button" class="chip is-active" data-star="all" aria-pressed="true">
+        {{ t("Todas") }} <span class="chip__n">{{ reviews | length }}</span>
+      </button>
+      {% for s in [5, 4, 3, 2, 1] %}
+      {% set n = reviews | selectattr('rating', 'equalto', s) | list | length %}
+      {% if n %}
+      <button type="button" class="chip" data-star="{{ s }}" aria-pressed="false"
+              aria-label="{{ t('{n} opiniones de {s} estrellas').format(n=n, s=s) }}">
+        <span class="stars">{{ "★" * s }}</span> <span class="chip__n">{{ n }}</span>
+      </button>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="reviews-grid" id="reviewsList" style="margin-top:0">
       {% for r in reviews %}{% include "_review.html" %}{% endfor %}
     </div>
+    <p class="muted center" id="reviewsEmpty" hidden>{{ t("No hay opiniones con esta calificación.") }}</p>
     {% if not reviews %}<p class="muted center">{{ t("Aún no hay opiniones. ¡Sé el primero en compartir tu experiencia!") }}</p>{% endif %}
 
     <div class="card" style="max-width:680px;margin:56px auto 0">
